@@ -1,0 +1,134 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
+{
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family: Arial;
+	color: #FFCC24; /* gold */
+	background-color: #26251F; /* dark brown-gray*/
+}
+body > div {
+	margin: 0em auto;
+	padding: 0em;
+	width: 50em;
+	overflow: auto;
+}
+div.left_column {
+	float: left;
+}
+div.right_column {
+	float: right;
+}
+
+/* top menu */
+ul#top_menu {
+	float: left;
+	list-style: none;
+}
+ul#top_menu > li {
+	float: left;
+	margin-left: 1em;
+}
+ul#top_menu > li:first-child {
+	margin-left: 0;
+}
+ul#top_menu > li > a {
+	height: 3.5em;
+	width: 6em;
+	background-color: transparent;
+	line-height: 3.5em;
+	text-align: center;
+	font-size: 1.1em;
+	display: inline-block;
+	text-decoration: none;
+}
+ul#top_menu > li > a#replays {
+	border: 2px solid #FFCC24;
+	color: #FFCC24;
+}
+ul#top_menu > li > a#news, a#faq, a#feedback {
+	border: 2px solid #A6A388; /* gray */
+	color: #A6A388;
+}
+ul#top_menu > li > a#feedback {
+	margin-right: 0;
+}
+
+/* side menu */
+ul#side_menu {
+	list-style: none;
+	float: right;
+}
+ul#side_menu > li {
+	
+}
+ul#side_menu > li > a {
+	border: 2px solid #A6A388;
+	color: #A6A388;
+	background-color: transparent;
+	text-decoration: none;
+	display: inline-block;
+	text-align: center;
+	font-size: 1.1em;
+	width: 10em;
+}
+ul#side_menu > li > a#login {
+	color: #2AD7FA;
+	height: 7em;
+	line-height: 7em;
+	border: 2px solid #2AD7FA;
+	
+}
+ul#side_menu > li > a#upload, a#my_replays, a#my_reviews, a#my_review_requests {
+	height: 3.5em;
+	line-height: 3.5em;
+	margin-top: 1em;
+}
+	
+/* content */
+div.content {
+	clear: left;
+	float: left;
+	border: 2px #FFCC24 solid;
+	margin-top: 1em;
+	/*padding-top: 0.5em;
+	padding-bottom: 0.5em;*/
+}
+	
+/* replays */
+ul.replay_list {
+	width: 37.5em;
+	list-style: none;
+	overflow: auto;
+}
+ul.replay_list > li {
+	padding: 1em 1em 1em 1em;
+	overflow: auto;
+}
+ul.replay_list > li + li {
+	background-color: black;
+}
+ul.replay_list > li:first-child {
+	margin-top: 0;
+}
+ul.replay_list > li > div > div.upload_info {
+	float: right;
+}
+ul.replay_list > li > div > div.upload_info > img.uploader_image {
+	height: 0.9em;
+	width: 0.9em;
+}
+ul.replay_list > li > div > img.hero_image {
+	width: 1.5em;
+	height: 1.5em;	
+}
+ul.replay_list > li > div > span.length {
+	height: 1.8em;
+	line-height: 1.8em;
+	float: right;
+}
+ul.replay_list > li > div > span.download {
+	float: right;
+}
+

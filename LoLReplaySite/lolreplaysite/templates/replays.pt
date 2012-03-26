@@ -1,0 +1,62 @@
+<metal:main use-macro="layout">
+<metal:main metal:fill-slot="content">
+<ul class="replay_list">
+	<li>
+		<div>
+			<span>Kog 1v4</span>
+			<div class="upload_info">
+				<span>Uploaded on 03/03/12 by</span>
+				<img class='uploader_image' />
+				<span>Wa11ace</span>
+			</div>
+		</div>
+		<div>
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<span class="vs">vs</span>
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<span class="length">Length: 0:28:29</span>
+		</div>
+		<div>
+			<span class="match_details">Match Details/Comments(0)</span>
+			<span class="download">Download</span>
+		</div>
+	</li>
+	<li>
+		<div>
+			<span>Homing Arrow can't miss</span>
+			<div class="upload_info">
+				<span>Uploaded on 03/03/12 by</span>
+				<img class='uploader_image' />
+				<span>Wa11ace</span>
+			</div>
+		</div>
+		<div>
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<span class="vs">vs</span>
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<img class='hero_image' />
+			<span class="length">Length: 0:28:29</span>
+		</div>
+		<div>
+			<span class="match_details">Match Details/Comments(0)</span>
+			<span class="download">Download</span>
+		</div>
+	</li>
+</ul>
+</metal:main>
+</metal:main>

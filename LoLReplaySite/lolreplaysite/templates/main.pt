@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xml:lang="en"
+	  xmlns:tal="http://xml.zope.org/namespaces/tal"
+	  xmlns:metal="http://xml.zope.org/namespaces/metal"
+	  metal:define-macro="layout">
+
+<head>
+	<title>I'm Not Fucking Around: A LoL Replay Site</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<link rel="stylesheet" href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
+</head>
+
+<body>
+	<div>
+		<h1>Homing Missile</h1>
+		<div class="left_column">
+			<ul id="top_menu">
+				<li><a id="replays" href="/replays">Replays</a></li>
+				<li><a id="news" href="/news">News</a></li>
+				<li><a id="faq" href="/faq">FAQ</a></li>
+				<li><a id="feedback" href="/feedback">Feedback</a></li>
+			</ul>
+			<div class="content">
+				<metal:main define-slot="content" />
+			</div>
+		</div>
+		<div class="right_column">
+			
+			<ul id="side_menu">
+				<li><a id="login" href="#">Login</a></li>
+				<li><a id="upload" href="#">Upload a Replay</a></li>
+				<li><a id="my_replays" href="#">My Replays</a></li>
+				<li><a id="my_reviews" href="#">My Reviews</a></li>
+				<li><a id="my_review_requests" href="#">Review Requests(3)</a></li>
+			</ul>
+				
+		</div>
+	</div>
+</body>
+</html>
