@@ -9,8 +9,14 @@ def site_layout():
 
 @view_config(route_name='home', renderer='templates/main.pt')
 def home(request):
-    return {'layout': site_layout(), 'replay_list': []}
+	# view_config renderer is ignored
+    return HTTPFound('replays')
 
 @view_config(route_name='replays', renderer='templates/replays.pt')
 def replays(request):
- 	return {'layout': site_layout(), 'replay_list': []}
+ 	return {'layout': site_layout(), 'active_tab': 'replays', 'replay_list': []}
+
+@view_config(route_name='news', renderer='templates/news.pt')
+def news(request):
+	return {'layout': site_layout(), 'active_tab': 'news', 'news_list': []}
+	

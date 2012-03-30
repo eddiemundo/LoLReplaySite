@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <metal:main use-macro="layout">
 <metal:main metal:fill-slot="content">
 <ul class="replay_list">
@@ -6,22 +7,22 @@
 			<span>Kog 1v4</span>
 			<div class="upload_info">
 				<span>Uploaded on 03/03/12 by</span>
-				<img class='uploader_image' />
+				<img class='uploader_image' alt="" src="" />
 				<span>Wa11ace</span>
 			</div>
 		</div>
 		<div>
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
 			<span class="vs">vs</span>
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
 			<span class="length">Length: 0:28:29</span>
 		</div>
 		<div>
@@ -34,22 +35,22 @@
 			<span>Homing Arrow can't miss</span>
 			<div class="upload_info">
 				<span>Uploaded on 03/03/12 by</span>
-				<img class='uploader_image' />
+				<img class='uploader_image' alt="" src="" />
 				<span>Wa11ace</span>
 			</div>
 		</div>
 		<div>
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
 			<span class="vs">vs</span>
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
-			<img class='hero_image' />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
+			<img class='hero_image' alt="" src="" />
 			<span class="length">Length: 0:28:29</span>
 		</div>
 		<div>

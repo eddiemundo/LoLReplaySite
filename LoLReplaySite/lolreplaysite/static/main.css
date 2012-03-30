@@ -43,17 +43,23 @@ ul#top_menu > li > a {
 	display: inline-block;
 	text-decoration: none;
 }
-ul#top_menu > li > a#replays {
-	border: 2px solid #FFCC24;
-	color: #FFCC24;
-}
-ul#top_menu > li > a#news, a#faq, a#feedback {
+
+ul#top_menu > li > a {
 	border: 2px solid #A6A388; /* gray */
 	color: #A6A388;
+}
+ul#top_menu > li > a:hover {
+	border: 2px solid #FFCC24;
+	color: #FFCC24;
 }
 ul#top_menu > li > a#feedback {
 	margin-right: 0;
 }
+ul#top_menu > li > a.active_tab {
+	border: 2px solid #FFCC24;
+	color: #FFCC24;
+}
+
 
 /* side menu */
 ul#side_menu {
@@ -80,7 +86,7 @@ ul#side_menu > li > a#login {
 	border: 2px solid #2AD7FA;
 	
 }
-ul#side_menu > li > a#upload, a#my_replays, a#my_reviews, a#my_review_requests {
+ul#side_menu > li > a#upload_a_replay, a#my_replays, a#my_reviews, a#review_requests {
 	height: 3.5em;
 	line-height: 3.5em;
 	margin-top: 1em;
@@ -132,3 +138,17 @@ ul.replay_list > li > div > span.download {
 	float: right;
 }
 
+/* news */
+ul.news {
+	width: 37.5em;
+	list-style: none;
+}
+ul.news > li {
+	padding: 1em;
+}
+ul.news > li > span.date {
+	float: right;
+}
+ul.news > li + li {
+	background-color: black;
+}

@@ -16,25 +16,21 @@
 		<h1>Homing Missile</h1>
 		<div class="left_column">
 			<ul id="top_menu">
-				<li><a id="replays" href="/replays">Replays</a></li>
-				<li><a id="news" href="/news">News</a></li>
-				<li><a id="faq" href="/faq">FAQ</a></li>
-				<li><a id="feedback" href="/feedback">Feedback</a></li>
+				<li tal:repeat="txt ('replays', 'news', 'faq', 'feedback')" tal:switch="txt==active_tab">					
+					<a class="active_tab" tal:case="True" tal:attributes="id txt;href string:/$txt" tal:content="txt.capitalize()"></a>
+					<a tal:case="False" tal:attributes="id txt;href string:/$txt" tal:content="txt.capitalize()"></a>
+				</li>
 			</ul>
 			<div class="content">
 				<metal:main define-slot="content" />
 			</div>
 		</div>
 		<div class="right_column">
-			
 			<ul id="side_menu">
-				<li><a id="login" href="#">Login</a></li>
-				<li><a id="upload" href="#">Upload a Replay</a></li>
-				<li><a id="my_replays" href="#">My Replays</a></li>
-				<li><a id="my_reviews" href="#">My Reviews</a></li>
-				<li><a id="my_review_requests" href="#">Review Requests(3)</a></li>
+				<li tal:repeat="txt ('Login', 'Upload a Replay', 'My Replays', 'My Reviews', 'Review Requests')">
+					<a tal:attributes="id txt.lower().replace(' ', '_');href string:#" tal:content="txt"></a>
+				</li>
 			</ul>
-				
 		</div>
 	</div>
 </body>
