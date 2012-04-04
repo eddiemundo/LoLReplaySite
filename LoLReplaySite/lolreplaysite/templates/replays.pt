@@ -2,60 +2,36 @@
 <metal:main use-macro="layout">
 <metal:main metal:fill-slot="content">
 <ul class="replay_list">
-	<li>
+	<li 
+	tal:repeat="replay replay_list"
+	class="${'even' if repeat.replay.even else ''}">
 		<div>
-			<span>Kog 1v4</span>
+			<span>Random Title</span>
 			<div class="upload_info">
-				<span>Uploaded on 03/03/12 by</span>
+				<span>Played on ${replay['date_recorded']} by</span>
 				<img class='uploader_image' alt="" src="" />
 				<span>Wa11ace</span>
 			</div>
 		</div>
 		<div>
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
+			<img
+			tal:repeat="player replay['team1']"
+			class='hero_image'
+			title="${player[0]}"
+			src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.135/content/champion/icons/${player[1]}.jpg"
+			/>
 			<span class="vs">vs</span>
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
+			<img
+			tal:repeat="player replay['team2']"
+			class='hero_image'
+			title="${player[0]}"
+			src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.135/content/champion/icons/${player[1]}.jpg"
+			/>
 			<span class="length">Length: 0:28:29</span>
 		</div>
 		<div>
 			<span class="match_details">Match Details/Comments(0)</span>
-			<span class="download">Download</span>
-		</div>
-	</li>
-	<li>
-		<div>
-			<span>Homing Arrow can't miss</span>
-			<div class="upload_info">
-				<span>Uploaded on 03/03/12 by</span>
-				<img class='uploader_image' alt="" src="" />
-				<span>Wa11ace</span>
-			</div>
-		</div>
-		<div>
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<span class="vs">vs</span>
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<img class='hero_image' alt="" src="" />
-			<span class="length">Length: 0:28:29</span>
-		</div>
-		<div>
-			<span class="match_details">Match Details/Comments(0)</span>
-			<span class="download">Download</span>
+			<span class="download"><a href="/download/replay/${replay['filename']}">Download</a></span>
 		</div>
 	</li>
 </ul>

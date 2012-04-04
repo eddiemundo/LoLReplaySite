@@ -112,7 +112,7 @@ ul.replay_list > li {
 	padding: 1em 1em 1em 1em;
 	overflow: auto;
 }
-ul.replay_list > li + li {
+ul.replay_list > li.even {
 	background-color: black;
 }
 ul.replay_list > li:first-child {
@@ -137,6 +137,10 @@ ul.replay_list > li > div > span.length {
 ul.replay_list > li > div > span.download {
 	float: right;
 }
+ul.replay_list > li > div > span.download > a {
+	
+	color: #FFCC24;
+}
 
 /* news */
 ul.news {
@@ -149,6 +153,6 @@ ul.news > li {
 ul.news > li > span.date {
 	float: right;
 }
-ul.news > li + li {
+ul.news > li.even {
 	background-color: black;
 }

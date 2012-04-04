@@ -28,7 +28,7 @@
 		<div class="right_column">
 			<ul id="side_menu">
 				<li tal:repeat="txt ('Login', 'Upload a Replay', 'My Replays', 'My Reviews', 'Review Requests')">
-					<a tal:attributes="id txt.lower().replace(' ', '_');href string:#" tal:content="txt"></a>
+					<a tal:attributes="id txt.lower().replace(' ', '_');href txt.lower().replace(' ', '_')" tal:content="txt"></a>
 				</li>
 			</ul>
 		</div>

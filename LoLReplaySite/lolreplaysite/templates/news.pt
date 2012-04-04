@@ -3,7 +3,7 @@
 <metal:main metal:fill-slot="content">
 
 <ul class="news">
-	<li>
+	<li class="even">
 		<span class="date">Tuesday 14th, 2012</span>
 		<h4>Chicken Day</h4>
 		<p>
