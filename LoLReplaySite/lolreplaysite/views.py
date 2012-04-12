@@ -1,121 +1,337 @@
 from pyramid.view import view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.renderers import get_renderer
+
+from pyramid.security import has_permission, remember, forget, authenticated_userid, unauthenticated_userid, effective_principals
 
 from datetime import datetime
 from GraphDatabase import GraphDatabase
-import struct, json, os
- 
+from lolreplaysite.security import db_location
+import struct, json, os, hashlib, uuid, re, logging
+from collections import defaultdict
+
+log = logging.getLogger(__name__)
+
+
 
 def site_layout():
 	renderer = get_renderer("templates/main.pt")
 	layout = renderer.implementation().macros['layout']
 	return layout
 
-@view_config(route_name='home', renderer='templates/main.pt')
+@view_config(route_name='home', renderer='templates/home.pt')
 def home(request):
-	# view_config renderer is ignored
-	return HTTPFound('/replays')
-
-@view_config(route_name='news', renderer='templates/news.pt')
-def news(request):
-	return {'layout': site_layout(), 'active_tab': 'news', 'news_list': []}
+	return {
+		'layout': site_layout(),
+		'active_tab': 'Home',
+		'news_list': [],
+		'logged_in': authenticated_userid(request),
+		}
 
 @view_config(route_name='replays', renderer='templates/replays.pt')
 def replays(request):
-	gd = GraphDatabase(replay_database_filename)
-	
-	replay_list = []
-	for node in gd.graph.nodes.values():
-		datetime_uploaded = node.properties['date_uploaded']
-		datetime_recorded = node.properties['date_recorded']
+	gd = GraphDatabase(db_location)
+	replay_nodes = gd.graph.findNodesByProperty('type', 'replay')
+	replays = []
+	# code is a bit sloppy
+	for node in replay_nodes:
+		length = node.properties['length']
+		blue_team = node.properties['blue_team']
+		purple_team = node.properties['purple_team']
+		pov_summoner_name = node.properties['pov']
+		pov_champion_id = ''
+		pov_champion_name = ''
+		team = None
+		if pov_summoner_name in blue_team:
+			team = blue_team
+		elif pov_summoner_name in purple_team:
+			team = purple_team
+		pov_champion_id = str(heroes[team[pov_summoner_name]['champion_name'].lower()])
+		pov_champion_name = team[pov_summoner_name]['champion_name']
+			
 		replay = {
-				'date_uploaded': datetime_uploaded.strftime("%a %d-%m-%y"),
-				'date_recorded': datetime_recorded.strftime("%a %d-%m-%y"),
-				'team1': [(summoner, str(heroes[hero.lower()])) for summoner, hero in node.properties['team1']],
-				'team2': [(summoner, str(heroes[hero.lower()])) for summoner, hero in node.properties['team2']],
-				'filename': node.name + '.lrf'
+				'pov': {
+					'summoner_name': pov_summoner_name,
+					'champion_id': pov_champion_id,
+					'champion_name': pov_champion_name,
+					},
+				'title': node.properties['title'],
+				'length': "{0}:{1}:{2}".format(length//3600, length//60, length % 60),
+				'date_recorded': node.properties['date_recorded'].strftime("%a %d-%m-%y"),
+				'blue_team': [
+							{
+							'summoner_name': summoner,
+							'champion_id': str(heroes[blue_team[summoner]['champion_name'].lower()]),
+							'champion_name': blue_team[summoner]['champion_name'],
+							} for summoner in blue_team],
+				'purple_team': [
+							{
+							'summoner_name': summoner,
+							'champion_id': str(heroes[purple_team[summoner]['champion_name'].lower()]),
+							'champion_name': purple_team[summoner]['champion_name'],
+							} for summoner in purple_team],
+				'filename': node.properties['filename']
 				}
-		replay_list.append(replay)
-	
-	return {'layout': site_layout(), 'active_tab': 'replays', 'replay_list': replay_list}
+		replays.append(replay)
+	return {
+		'layout': site_layout(),
+		'replay_list': replays,
+		'active_tab': 'Replays',
+		'logged_in': authenticated_userid(request),
+		}
 
-@view_config(route_name='upload_a_replay', renderer='templates/upload_a_replay.pt')
-def upload_a_replay(request):
-	return {'layout': site_layout(), 'active_tab': 'upload_a_replay'}
+@view_config(route_name='faq')
+def faq(request):
+	return HTTPFound('/')
 
-@view_config(route_name='upload_replay')
+@view_config(route_name='feedback')
+def feedback(request):
+	return HTTPFound('/')
+
+@view_config(route_name='upload', renderer='templates/upload.pt')
+def upload(request):
+	logged_in = authenticated_userid(request)
+	if not logged_in:
+		request.session['came_from'] = '/upload'
+		return HTTPFound(request.route_url('login'))
+	return {
+		'layout': site_layout(),
+		'active_tab': 'Upload',
+		'logged_in': logged_in
+		}
+
+@view_config(route_name='upload_replay', request_method='POST')
 def upload_replay(request):
 	# check if a file was even uploaded
 	if not hasattr(request.POST['replay'], 'file'):
-		return HTTPFound('upload_a_replay')
+		return HTTPFound(request.route_url('upload'))
 	
-	# get the json out of the replay file
+	# the replay file that was uploaded
 	replay_file = request.POST['replay'].file
-	
 	# seek(0) stops my internet connection from crashing... don't ask me why
-	replay_file.seek(0) 
+	replay_file.seek(0)
+	# skip the first 4 bytes 
 	replay_file.seek(4)
+	# read the next 4 bytes. this is the length of the json header
 	json_length = struct.unpack("<L", replay_file.read(4))[0]
+	# load the json data into python form
 	replay_data = json.loads(replay_file.read(json_length).decode('utf-8'))
 	
-	# parse the json for team information
-	team1 = []
-	team2 = []
+	# parse the json for specific replay, team, and player data
+	pov = None
+	blue_team = {}
+	purple_team = {}
 	for player in replay_data['players']:
+		# find out who's pov it is 
+		if replay_data['accountID'] == player['accountID']:
+			pov = player['summoner']
+		# parse the items for the player
+		items = []
+		for item in ('item1', 'item2', 'item3', 'item4', 'item5', 'item6'):
+			if item in player:
+				items.append(item)
+			else:
+				items.append(None)
+				
+		def getPlayer(attribute):
+			"""Returns 0 if attribute doesn't exist"""
+			if attribute in player:
+				return player[attribute]
+			else:
+				return 0
+		# put all the player data into one dictionary
+		player_data = {
+					'champion_name': player['champion'],
+					'level': player['level'],
+					'kills': getPlayer('kills'),
+					'deaths': getPlayer('deaths'),
+					'assists': getPlayer('assists'),
+					'items': tuple(items),
+					'summoner_spells': (player['spell1'], player['spell2']),
+					'gold': getPlayer('gold'),
+					'lane_minions_killed': getPlayer('minions'),
+					'neutral_minions_killed': getPlayer('neutralMinionsKilled'),
+					}
+		team = None
 		if player['team'] == 1:
-			team1.append((player['summoner'], player['champion']))
+			team = blue_team
 		elif player['team'] == 2:
-			team2.append((player['summoner'], player['champion']))
-	
+			team = purple_team
+		team[player['summoner']] = player_data
+				
 	# open/create the replay database
-	gd = GraphDatabase(replay_database_filename)
+	gd = GraphDatabase(db_location)
+	# most of the replay properties
+	title = request.POST['title']
+	if not title:
+		title = replay_data['name']
+	replay_properties = {
+						'type': 'replay',
+						'title': title,
+						'description': request.POST['description'],
+						'length': replay_data['matchLength'],
+						'pov': pov,
+						'client_version': replay_data,
+						'recorder_version': None,
+						'date_recorded': datetime.fromtimestamp(replay_data['timestamp']),
+						'date_uploaded': datetime.now(),
+						'blue_team': blue_team,
+						'purple_team': purple_team,
+						}
 	
-	# add and return a new replay node
-	replay_node = gd.graph.addNode()
+	# add a new replay node to the graph return it
+	replay_node = gd.graph.addNode(properties=replay_properties)
 	
-	# determine where we're going to save the uploaded replay file
-	filename = replay_folder_path + replay_node.name + '.lrf'
-	
-	# put the replay data we care about into the replay node 
-	replay_node.properties['date_uploaded'] = datetime.now()
-	replay_node.properties['date_recorded'] = datetime.fromtimestamp(replay_data['timestamp'])
+	# put the filename, and location into the replay node
+	filename = str(replay_node.id) + '.lrf'
+	location = replay_folder_location + filename
+	 
 	replay_node.properties['filename'] = filename
-	replay_node.properties['team1'] = team1
-	replay_node.properties['team2'] = team2
+	replay_node.properties['location'] = location
 	
-	# save changes made to the database to disk
-	gd.save()
+	# relate this replay node to the user node that uploaded it
+	user_node = gd.graph.findNodesByProperty('username', authenticated_userid(request))[0]
+	gd.graph.relate(user_node.id, 'owns', replay_node.id)
 	
 	# write replay file to disk
 	replay_file.seek(0)
-	with open(filename, 'wb') as f:
+	with open(location, 'wb') as f:
 		data = replay_file.read(2 << 16)
 		while data:
 			f.write(data)
 			data = replay_file.read(2 << 16)
 
+	# save changes made to the database to disk
+	gd.save()
+
 	return HTTPFound('/replays')
 
 @view_config(route_name='download_replay')
 def download_replay(request):
-	# because of pyramids url routing replay_id and ext have no slashes in them
-	replay_id = request.matchdict['id']
-	ext = request.matchdict['ext']
-	
-	filename = replay_id + '.' + ext	
-
+	filename = request.matchdict['id'] + '.' + request.matchdict['ext']	
 	response = Response(
 					content_type='application/force-download',
-					content_disposition='attachment; filename=' + filename
+					content_disposition='attachment; filename=' + filename,
 					)
-	response.app_iter = open(replay_folder_path + filename, 'rb')
-	response.content_length = os.path.getsize(replay_folder_path + filename)
+	response.app_iter = open(replay_folder_location + filename, 'rb')
+	response.content_length = os.path.getsize(replay_folder_location + filename)
 	return response
 
-replay_database_filename = 'lolreplaysite/databases/replays.gd'
-replay_folder_path = 'lolreplaysite/replays/'
+
+@view_config(route_name='register', renderer='templates/register.pt')
+def register(self, request):
+	error_message = ''
+	username = ''
+	email_address = ''
+	password = ''
+	came_from = '/'
+	
+	# see where the user came from
+	session = request.session
+	if 'came_from' in session:
+		came_from = session['came_from']
+	
+	if 'form.submitted' in request.params:
+		username = request.params['username']
+		email_address = request.params['email_address']
+		password = request.params['password']
+		# open/create the database containing our user nodes
+		gd = GraphDatabase(db_location)
+		user_nodes = gd.graph.findNodesByProperty('type', 'user')
+		
+		if len(username) < 3:
+			error_message = 'Username needs to be 3 or more characters'
+		elif gd.graph.findNodesByProperty('username', username, user_nodes):
+			error_message = 'Username is already taken'
+		elif not re.match(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\b", email_address):
+			error_message = 'Email address is not valid'
+			email_address = ''
+		elif gd.graph.findNodesByProperty('email_address', email_address, user_nodes):
+			error_message = 'Email address is already taken'
+			email_address = ''
+		elif len(password) < 3:
+			password = 'Password needs to be 3 or more characters'
+			password_repeated = ''
+		else:
+			salt = uuid.uuid4().hex
+			hashed_password = hashlib.sha512(bytes(password + salt, 'utf-8')).hexdigest()
+			user_properties = {
+							'type': 'user',
+							'username': username,
+							'email_address': email_address,
+							'password': hashed_password,
+							'salt': salt,
+							'date_registered': datetime.now(),
+							}
+			gd.graph.addNode(properties=user_properties)
+			gd.save()
+			
+			# authenticate the newly registered user
+			headers = remember(request, username)
+			return HTTPFound(location=came_from, headers=headers)
+	
+	return {
+		'page_title': 'Registration',
+		'error_message': error_message,
+		'url': request.application_url + '/register',
+		'username': username,
+		'email_address': email_address,
+		'password': password,
+		'came_from': came_from,
+		}
+
+@view_config(route_name='login', renderer="templates/login.pt", context=HTTPForbidden)
+@view_config(route_name='login', renderer="templates/login.pt")
+def login(self, request):
+	message = ''
+	username = ''
+	password = ''
+	came_from = '/'
+	
+	# see where the user came from
+	session = request.session
+	if 'came_from' in session:
+		came_from = session['came_from']
+	
+	if 'form.submitted' in request.params:
+		username = request.params['username']
+		password = request.params['password']
+		came_from = request.params['came_from']
+		# open/create our userdb
+		usersdb = GraphDatabase(db_location)
+		users_graph = usersdb.graph
+		possible_users = users_graph.findNodesByProperty('username', username)
+		        
+		if len(possible_users) == 1:
+			user = possible_users[0]
+			user_password = user.properties['password']
+			user_salt = user.properties['salt']
+			if get_hashed_password(password, user_salt) == user_password:
+				headers = remember(request, username)
+				return HTTPFound(location=came_from, headers=headers)
+		
+		message = 'Username or password is incorrect'
+		login = ''
+		password = ''
+
+	return {
+		"page_title": "Login",
+		"message": message,
+		"url": request.application_url + '/login',
+		'came_from': came_from,
+		'username': username,
+		"password": password,
+	    }
+
+@view_config(route_name='logout')
+def logout(self, request):
+    headers = forget(request)
+    return HTTPFound(location='/replays', headers=headers)
+   
+
+
+replay_folder_location = 'lolreplaysite/replays/'
 heroes = {
     'ahri':103,
     'akali':84,
@@ -156,6 +372,7 @@ heroes = {
     'leblanc':7,
     'leesin':64,
     'leona':89,
+    'lulu':117,
     'lux':99,
     'malphite':54,
     'malzahar':90,
@@ -212,3 +429,8 @@ heroes = {
     'ziggs':115,
     'zilean':26,
 }
+heroes = defaultdict(int, heroes)
+
+# helper functions
+def get_hashed_password(password, salt):
+	return hashlib.sha512(bytes(password + salt, 'utf-8')).hexdigest()

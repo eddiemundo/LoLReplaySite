@@ -7,31 +7,40 @@
 
 <head>
 	<title>I'm Not Fucking Around: A LoL Replay Site</title>
-	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-	<link rel="stylesheet" href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
+	<meta http-equiv="Content-Type"
+		  content="text/html;charset=UTF-8" />
+	<link rel="stylesheet"
+		  href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
 </head>
 
 <body>
-	<div>
-		<h1>Homing Missile</h1>
-		<div class="left_column">
-			<ul id="top_menu">
-				<li tal:repeat="txt ('replays', 'news', 'faq', 'feedback')" tal:switch="txt==active_tab">					
-					<a class="active_tab" tal:case="True" tal:attributes="id txt;href string:/$txt" tal:content="txt.capitalize()"></a>
-					<a tal:case="False" tal:attributes="id txt;href string:/$txt" tal:content="txt.capitalize()"></a>
-				</li>
-			</ul>
-			<div class="content">
-				<metal:main define-slot="content" />
-			</div>
-		</div>
-		<div class="right_column">
-			<ul id="side_menu">
-				<li tal:repeat="txt ('Login', 'Upload a Replay', 'My Replays', 'My Reviews', 'Review Requests')">
-					<a tal:attributes="id txt.lower().replace(' ', '_');href txt.lower().replace(' ', '_')" tal:content="txt"></a>
-				</li>
-			</ul>
-		</div>
+<div>
+	<h1>Homing Missile</h1>
+	<ul id="user_bar">
+		<li tal:condition="not logged_in">
+			<a href="/login">Log in</a>
+		</li>
+		<li tal:condition="logged_in">
+			Welcome, ${logged_in}. [Mail Icon] | <a href="/user/23432/n7shepard/public">Switch to Personal View</a> | <a href="/logout">Log out</a>
+		</li>
+	</ul>
+	<metal:main define-slot="menu" />
+	<ul id="main_menu"
+		tal:define="menu_items zip(('Home', 'Replays', 'FAQ', 'Upload'), ('', 'replays', 'faq', 'upload'))">
+		<li tal:repeat="menu_item menu_items"
+			tal:switch="menu_item[0]==active_tab">					
+			<a id="${menu_item[1]}"
+			   class="active_tab"
+			   href="/${menu_item[1]}"
+			   tal:case="True">${menu_item[0]}</a>
+			<a id="${menu_item[1]}"
+			   href="/${menu_item[1]}"
+			   tal:case="False">${menu_item[0]}</a>
+		</li>
+	</ul>
+	<div class="content">
+		<metal:main define-slot="content" />
 	</div>
+</div>
 </body>
 </html>
