@@ -21,18 +21,23 @@ def main(global_config, **settings):
 						session_factory = my_session_factory,
 						)
     config.add_static_view('static', 'static', cache_max_age=3600)
-    config.add_route('home', '/')
+
     config.add_route('replays', '/replays')
     config.add_route('faq', '/faq')
     config.add_route('feedback', '/feedback')
-    
-    config.add_route('personal_view', '/personal')
-    
     config.add_route('upload', '/upload')
+        
+    config.add_route('user_notifications', '/users/{userid}/{username}/notifications')
+    config.add_route('user_replays', '/users/{userid}/{username}/replays')
+    config.add_route('user_reviews', '/users/{userid}/{username}/reviews')
+    config.add_route('user_account', '/users/{userid}/{username}')
+    
     config.add_route('upload_replay', '/upload_replay')
     config.add_route('download_replay', '/download/replay/{id}.{ext}')
+    
+    config.add_route('register', '/register')
     config.add_route('login', '/login')
     config.add_route('logout', '/logout')
-    config.add_route('register', '/register')
+    
     config.scan()
     return config.make_wsgi_app()

@@ -3,11 +3,11 @@
 <metal:main metal:fill-slot="content">
 
 <form action="/upload_replay" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+	<input name="replay" type="file" /><br />
 	<label>Replay Title (optional)</label><br />
 	<input name="title" type="text" /><br />
 	<label>Description (optional)</label><br />
 	<textarea name="description"></textarea><br />
-	<input name="replay" type="file" multiple="" /><br />
 	<input name="form.submitted" type="submit" value="Upload" /><br />
 	
 </form>

@@ -15,27 +15,38 @@
 
 <body>
 <div>
-	<h1>Homing Missile</h1>
 	<ul id="user_bar">
 		<li tal:condition="not logged_in">
 			<a href="/login">Log in</a>
 		</li>
+		<li tal:condition="logged_in"
+			tal:repeat="menu_item user_menu_items">
+			<a href="${menu_item['href']}"
+			   tal:condition="menu_item['name'] == 'Notifications'">
+				<img class='mail_icon'
+					 src="${menu_item['src']}" />(0)
+			</a>
+			<a href="${menu_item['href']}"
+			   tal:condition="menu_item['name'] != 'Notifications'">
+			   ${menu_item['name']}
+			</a>
+		</li>
 		<li tal:condition="logged_in">
-			Welcome, ${logged_in}. [Mail Icon] | <a href="/user/23432/n7shepard/public">Switch to Personal View</a> | <a href="/logout">Log out</a>
+			${logged_in}
+		</li>
+		<li tal:condition="logged_in">
+			<a href="/logout">Log out</a>
 		</li>
 	</ul>
-	<metal:main define-slot="menu" />
-	<ul id="main_menu"
-		tal:define="menu_items zip(('Home', 'Replays', 'FAQ', 'Upload'), ('', 'replays', 'faq', 'upload'))">
+	<img class="logo" /><ul id="main_menu"
+		tal:define="menu_items main_menu_items">
 		<li tal:repeat="menu_item menu_items"
-			tal:switch="menu_item[0]==active_tab">					
-			<a id="${menu_item[1]}"
+			tal:switch="menu_item['active']">					
+			<a tal:case="True" 
 			   class="active_tab"
-			   href="/${menu_item[1]}"
-			   tal:case="True">${menu_item[0]}</a>
-			<a id="${menu_item[1]}"
-			   href="/${menu_item[1]}"
-			   tal:case="False">${menu_item[0]}</a>
+			   href="${menu_item['href']}">${menu_item['name']}</a>
+			<a tal:case="False" 
+			   href="${menu_item['href']}">${menu_item['name']}</a>
 		</li>
 	</ul>
 	<div class="content">

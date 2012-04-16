@@ -1,158 +1,128 @@
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td
-{
-	margin: 0;
-	padding: 0;
-}
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0; }
+
 body {
-	font-family: Arial;
-	color: #FFCC24; /* gold */
-	background-color: #26251F; /* dark brown-gray*/
-}
-body > div {
-	margin: 0em auto;
-	padding: 0em;
-	width: 50em;
-	overflow: auto;
-}
-div.left_column {
-	float: left;
-}
-div.right_column {
-	float: right;
-}
+  font-family: "Consolas", "Monaco", "Lucida Console";
+  color: #ff8800;
+  background-color: black; }
+  body > div {
+    margin: auto;
+    width: 47em;
+    overflow: auto;
+    height: auto; }
+    body > div > img.logo {
+      display: inline-block;
+      height: 5em;
+      width: 12em;
+      border: 1px solid white;
+      margin-right: 1em; }
+    body > div.login {
+      margin: auto;
+      width: 20em; }
+      body > div.login input[type='text'], body > div.login input[type='password'] {
+        width: 15em; }
+      body > div.login a {
+        color: #2ad7fa; }
+      body > div.login em {
+        color: red; }
 
-/* top menu */
-ul#top_menu {
-	float: left;
-	list-style: none;
-}
-ul#top_menu > li {
-	float: left;
-	margin-left: 1em;
-}
-ul#top_menu > li:first-child {
-	margin-left: 0;
-}
-ul#top_menu > li > a {
-	height: 3.5em;
-	width: 6em;
-	background-color: transparent;
-	line-height: 3.5em;
-	text-align: center;
-	font-size: 1.1em;
-	display: inline-block;
-	text-decoration: none;
-}
+#user_bar {
+  border-top: 1px solid #ff8800;
+  border-bottom: 1px solid #ff8800;
+  overflow: auto;
+  margin: 1em 0 1em 0;
+  padding: 0.3em 0 0.3em 0; }
+  #user_bar > li {
+    display: inline-block; }
+  #user_bar .mail_icon {
+    height: 1.2em;
+    vertical-align: bottom; }
+  #user_bar > span {
+    float: right; }
+  #user_bar a {
+    color: #ff8800;
+    text-decoration: none;
+    font-size: 1em; }
 
-ul#top_menu > li > a {
-	border: 2px solid #A6A388; /* gray */
-	color: #A6A388;
-}
-ul#top_menu > li > a:hover {
-	border: 2px solid #FFCC24;
-	color: #FFCC24;
-}
-ul#top_menu > li > a#feedback {
-	margin-right: 0;
-}
-ul#top_menu > li > a.active_tab {
-	border: 2px solid #FFCC24;
-	color: #FFCC24;
-}
+ul {
+  /* replays */ }
+  ul#main_menu {
+    display: inline-block;
+    list-style: none; }
+    ul#main_menu > li {
+      float: left;
+      margin-left: 1em; }
+      ul#main_menu > li:first-child {
+        margin-left: 0; }
+      ul#main_menu > li > a {
+        height: 3.5em;
+        width: 6em;
+        background-color: transparent;
+        line-height: 3.5em;
+        text-align: center;
+        font-size: 1.1em;
+        display: inline-block;
+        text-decoration: none;
+        border: 1px solid #a6a388;
+        color: #a6a388; }
+        ul#main_menu > li > a:hover {
+          border: 1px solid #ff8800;
+          color: #ff8800; }
+        ul#main_menu > li > a#feedback {
+          margin-right: 0; }
+        ul#main_menu > li > a.active_tab {
+          border: 1px solid #ff8800;
+          color: #ff8800; }
+  ul#replay_list {
+    list-style: none; }
+    ul#replay_list > li {
+      padding: 0.5em 0em 0.5em 0em;
+      overflow: auto; }
+      ul#replay_list > li:first-child {
+        padding-top: 0; }
+      ul#replay_list > li:last-child {
+        padding-bottom: 0; }
+      ul#replay_list > li > div .replay_title {
+        font-weight: bold; }
+      ul#replay_list > li > div > div.upload_info {
+        float: right; }
+        ul#replay_list > li > div > div.upload_info > img.uploader_image {
+          display: inline-block;
+          vertical-align: bottom;
+          height: 1.2em;
+          width: 1.2em; }
+      ul#replay_list > li > div > img.hero_image {
+        width: 1.5em;
+        height: 1.5em; }
+      ul#replay_list > li > div > span.length {
+        height: 1.8em;
+        line-height: 1.8em;
+        float: right; }
+      ul#replay_list > li > div > span.download {
+        float: right; }
+      ul#replay_list > li > div > span.download > a {
+        color: #ff8800; }
 
-
-/* side menu */
-ul#side_menu {
-	list-style: none;
-	float: right;
-}
-ul#side_menu > li {
-	
-}
-ul#side_menu > li > a {
-	border: 2px solid #A6A388;
-	color: #A6A388;
-	background-color: transparent;
-	text-decoration: none;
-	display: inline-block;
-	text-align: center;
-	font-size: 1.1em;
-	width: 10em;
-}
-ul#side_menu > li > a#login {
-	color: #2AD7FA;
-	height: 7em;
-	line-height: 7em;
-	border: 2px solid #2AD7FA;
-	
-}
-ul#side_menu > li > a#upload_a_replay, a#my_replays, a#my_reviews, a#review_requests {
-	height: 3.5em;
-	line-height: 3.5em;
-	margin-top: 1em;
-}
-	
 /* content */
 div.content {
-	clear: left;
-	float: left;
-	border: 2px #FFCC24 solid;
-	margin-top: 1em;
-	/*padding-top: 0.5em;
-	padding-bottom: 0.5em;*/
-}
-	
-/* replays */
-ul.replay_list {
-	width: 37.5em;
-	list-style: none;
-	overflow: auto;
-}
-ul.replay_list > li {
-	padding: 1em 1em 1em 1em;
-	overflow: auto;
-}
-ul.replay_list > li.even {
-	background-color: black;
-}
-ul.replay_list > li:first-child {
-	margin-top: 0;
-}
-ul.replay_list > li > div > div.upload_info {
-	float: right;
-}
-ul.replay_list > li > div > div.upload_info > img.uploader_image {
-	height: 0.9em;
-	width: 0.9em;
-}
-ul.replay_list > li > div > img.hero_image {
-	width: 1.5em;
-	height: 1.5em;	
-}
-ul.replay_list > li > div > span.length {
-	height: 1.8em;
-	line-height: 1.8em;
-	float: right;
-}
-ul.replay_list > li > div > span.download {
-	float: right;
-}
-ul.replay_list > li > div > span.download > a {
-	
-	color: #FFCC24;
-}
+  clear: left;
+  float: left;
+  border: 2px #ff8800 solid;
+  margin-top: 1em;
+  padding: 1em;
+  width: 44em; }
 
 /* news */
 ul.news {
-	width: 37.5em;
-	list-style: none;
-}
+  width: 37.5em;
+  list-style: none; }
+
 ul.news > li {
-	padding: 1em;
-}
+  padding: 1em; }
+
 ul.news > li > span.date {
-	float: right;
-}
+  float: right; }
+
 ul.news > li.even {
-	background-color: black;
-}
+  background-color: black; }

@@ -10,27 +10,24 @@ from GraphDatabase import GraphDatabase
 from lolreplaysite.security import db_location
 import struct, json, os, hashlib, uuid, re, logging
 from collections import defaultdict
-
 log = logging.getLogger(__name__)
 
 
-
-def site_layout():
-	renderer = get_renderer("templates/main.pt")
-	layout = renderer.implementation().macros['layout']
-	return layout
-
-@view_config(route_name='home', renderer='templates/home.pt')
-def home(request):
-	return {
-		'layout': site_layout(),
-		'active_tab': 'Home',
-		'news_list': [],
-		'logged_in': authenticated_userid(request),
-		}
+#@view_config(route_name='home')
+#def home(request):
+#	request.session['site_view'] = 'public'
+#	return {
+#		'layout': global_layout(),
+#		'user_menu': user_menu(request),
+#		'main_menu': main_menu(request),
+#		'logged_in': authenticated_userid(request),
+#		
+#		'news_list': [],
+#		}
 
 @view_config(route_name='replays', renderer='templates/replays.pt')
 def replays(request):
+	request.session['site_view'] = 'public'
 	gd = GraphDatabase(db_location)
 	replay_nodes = gd.graph.findNodesByProperty('type', 'replay')
 	replays = []
@@ -75,19 +72,70 @@ def replays(request):
 				}
 		replays.append(replay)
 	return {
-		'layout': site_layout(),
-		'replay_list': replays,
-		'active_tab': 'Replays',
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
 		'logged_in': authenticated_userid(request),
+		
+		'replay_list': replays,
+		
 		}
 
 @view_config(route_name='faq')
 def faq(request):
-	return HTTPFound('/')
+	request.session['site_view'] = 'public'
+	return {
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': authenticated_userid(request),
+		}
 
 @view_config(route_name='feedback')
 def feedback(request):
-	return HTTPFound('/')
+	request.session['site_view'] = 'public'
+	return {
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': authenticated_userid(request),
+		}
+
+@view_config(route_name='user_notifications')
+def user_notifications(request):
+	return {
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': authenticated_userid(request),
+		}
+	
+@view_config(route_name='user_replays')
+def user_replays(request):
+	return {
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': authenticated_userid(request),
+		}
+
+@view_config(route_name='user_reviews')
+def user_reviews(request):
+	return {
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': authenticated_userid(request),
+		}
+	
+@view_config(route_name='user_account')
+def user_account(request):
+	return {
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': authenticated_userid(request),
+		}
 
 @view_config(route_name='upload', renderer='templates/upload.pt')
 def upload(request):
@@ -96,9 +144,10 @@ def upload(request):
 		request.session['came_from'] = '/upload'
 		return HTTPFound(request.route_url('login'))
 	return {
-		'layout': site_layout(),
-		'active_tab': 'Upload',
-		'logged_in': logged_in
+		'layout': global_layout(),
+		'user_menu_items': user_menu(request),
+		'main_menu_items': main_menu(request),
+		'logged_in': logged_in,
 		}
 
 @view_config(route_name='upload_replay', request_method='POST')
@@ -218,7 +267,6 @@ def download_replay(request):
 	response.content_length = os.path.getsize(replay_folder_location + filename)
 	return response
 
-
 @view_config(route_name='register', renderer='templates/register.pt')
 def register(self, request):
 	error_message = ''
@@ -329,9 +377,37 @@ def logout(self, request):
     headers = forget(request)
     return HTTPFound(location='/replays', headers=headers)
    
-
-
 replay_folder_location = 'lolreplaysite/replays/'
+main_menu_items = (
+					{'name': 'Replays',
+					'href': '/replays',
+					},
+					{'name': 'FAQ',
+					'href': '/faq'
+					},
+					{'name': 'Feedback',
+					'href': '/feedback',
+					},
+					{'name': 'Upload',
+					'href': '/upload',
+					}
+					)
+user_menu_items = (
+					{
+					'name': 'Notifications',
+					'src': '{mail_icon}',
+					'href': '/users/{userid}/{username}/notifications',
+					},
+					{
+					'name': 'Your Replays',
+					'href': '/users/{userid}/{username}/replays',
+					},
+					{
+					'name': 'Your Reviews',
+					'href': '/users/{userid}/{username}/reviews',
+					},
+					)
+
 heroes = {
     'ahri':103,
     'akali':84,
@@ -434,3 +510,45 @@ heroes = defaultdict(int, heroes)
 # helper functions
 def get_hashed_password(password, salt):
 	return hashlib.sha512(bytes(password + salt, 'utf-8')).hexdigest()
+
+def global_layout():
+	renderer = get_renderer("templates/main.pt")
+	layout = renderer.implementation().macros['layout']
+	return layout
+
+def main_menu(request):
+	menu_items = main_menu_items
+	
+	for menu_item in menu_items:
+		route_matched = request.matched_route.match(menu_item['href'])
+		if route_matched != None:
+			menu_item['active'] = True
+		else:
+			menu_item['active'] = False
+	return menu_items
+	
+def user_menu(request):
+	menu_items = user_menu_items
+	
+	gd = GraphDatabase(db_location)
+	username = authenticated_userid(request)
+	if not username:
+		return {}
+	userid = gd.graph.findNodesByProperty('username', username)[0].id
+	string_map = {'userid': userid, 'username':username}
+	
+	for menu_item in menu_items:
+		route_matched = request.matched_route.match(menu_item['href'])
+		if route_matched != None:
+			menu_item['active'] = True
+		else:
+			menu_item['active'] = False
+		
+		if menu_item['name'] == 'Notifications':
+			menu_item['src'] = menu_item['src'].format_map({'mail_icon': request.static_url('lolreplaysite:static/orange_mail_icon_small.png')})
+		
+		menu_item['href'] = menu_item['href'].format_map(string_map)
+	
+	return menu_items
+	
+	
