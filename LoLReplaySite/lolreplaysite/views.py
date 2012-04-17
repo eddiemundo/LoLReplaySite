@@ -2,154 +2,74 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 from pyramid.renderers import get_renderer
+from pyramid.security import remember, forget, authenticated_userid
 
-from pyramid.security import has_permission, remember, forget, authenticated_userid, unauthenticated_userid, effective_principals
-
-from datetime import datetime
 from GraphDatabase import GraphDatabase
-from lolreplaysite.security import db_location
+from lolreplaysite.helpers import *
+from lolreplaysite.constants import REPLAY_FOLDER_LOCATION, DB_LOCATION
+
 import struct, json, os, hashlib, uuid, re, logging
-from collections import defaultdict
+from datetime import datetime
+
 log = logging.getLogger(__name__)
 
-
-#@view_config(route_name='home')
-#def home(request):
-#	request.session['site_view'] = 'public'
-#	return {
-#		'layout': global_layout(),
-#		'user_menu': user_menu(request),
-#		'main_menu': main_menu(request),
-#		'logged_in': authenticated_userid(request),
-#		
-#		'news_list': [],
-#		}
-
-@view_config(route_name='replays', renderer='templates/replays.pt')
-def replays(request):
-	request.session['site_view'] = 'public'
-	gd = GraphDatabase(db_location)
-	replay_nodes = gd.graph.findNodesByProperty('type', 'replay')
-	replays = []
-	# code is a bit sloppy
-	for node in replay_nodes:
-		length = node.properties['length']
-		blue_team = node.properties['blue_team']
-		purple_team = node.properties['purple_team']
-		pov_summoner_name = node.properties['pov']
-		pov_champion_id = ''
-		pov_champion_name = ''
-		team = None
-		if pov_summoner_name in blue_team:
-			team = blue_team
-		elif pov_summoner_name in purple_team:
-			team = purple_team
-		pov_champion_id = str(heroes[team[pov_summoner_name]['champion_name'].lower()])
-		pov_champion_name = team[pov_summoner_name]['champion_name']
-			
-		replay = {
-				'pov': {
-					'summoner_name': pov_summoner_name,
-					'champion_id': pov_champion_id,
-					'champion_name': pov_champion_name,
-					},
-				'title': node.properties['title'],
-				'length': "{0}:{1}:{2}".format(length//3600, length//60, length % 60),
-				'date_recorded': node.properties['date_recorded'].strftime("%a %d-%m-%y"),
-				'blue_team': [
-							{
-							'summoner_name': summoner,
-							'champion_id': str(heroes[blue_team[summoner]['champion_name'].lower()]),
-							'champion_name': blue_team[summoner]['champion_name'],
-							} for summoner in blue_team],
-				'purple_team': [
-							{
-							'summoner_name': summoner,
-							'champion_id': str(heroes[purple_team[summoner]['champion_name'].lower()]),
-							'champion_name': purple_team[summoner]['champion_name'],
-							} for summoner in purple_team],
-				'filename': node.properties['filename']
-				}
-		replays.append(replay)
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		
-		'replay_list': replays,
-		
-		}
-
-@view_config(route_name='faq')
-def faq(request):
-	request.session['site_view'] = 'public'
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		}
-
-@view_config(route_name='feedback')
-def feedback(request):
-	request.session['site_view'] = 'public'
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		}
-
-@view_config(route_name='user_notifications')
-def user_notifications(request):
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		}
+class View(object):
+	def __init__(self, request):
+		self.request = request
+		renderer = get_renderer("templates/main.pt")
+		layout = renderer.implementation().macros['layout']
+		self.layout = layout 
+		self.user_menu_items = user_menu_items(request)
+		self.main_menu_items = main_menu_items(request)
+		self.logged_in = authenticated_userid(request)
 	
-@view_config(route_name='user_replays')
-def user_replays(request):
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		}
-
-@view_config(route_name='user_reviews')
-def user_reviews(request):
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		}
+	@view_config(route_name='replays', renderer='templates/replays.pt')
+	def replays(self):
+		g = GraphDatabase(DB_LOCATION).graph
+		replay_nodes = g.findNodesByProperty('type', 'replay')
+		return {
+			'replay_list': get_parsed_replay_list(replay_nodes),
+			}
 	
-@view_config(route_name='user_account')
-def user_account(request):
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': authenticated_userid(request),
-		}
-
-@view_config(route_name='upload', renderer='templates/upload.pt')
-def upload(request):
-	logged_in = authenticated_userid(request)
-	if not logged_in:
-		request.session['came_from'] = '/upload'
-		return HTTPFound(request.route_url('login'))
-	return {
-		'layout': global_layout(),
-		'user_menu_items': user_menu(request),
-		'main_menu_items': main_menu(request),
-		'logged_in': logged_in,
-		}
-
+	@view_config(route_name='faq')
+	def faq(self):
+		return {}
+	
+	@view_config(route_name='feedback')
+	def feedback(self):
+		return {}
+	
+	@view_config(route_name='user_notifications')
+	def user_notifications(self):
+		return {}
+		
+	@view_config(route_name='user_replays', renderer='templates/replays.pt')
+	def user_replays(self):
+		userid = int(self.request.matchdict['userid'])
+		g = GraphDatabase(DB_LOCATION).graph
+		nodes = g.nodes
+		replay_nodes = []
+		if userid in nodes:
+			replay_nodes = list(g.search(userid, {'outgoing': ['owns']}))		
+		return {
+			'replay_list':get_parsed_replay_list(replay_nodes),
+			}
+	
+	@view_config(route_name='user_reviews')
+	def user_reviews(self):
+		return {}
+		
+	@view_config(route_name='user_account')
+	def user_account(self):
+		return {}
+	
+	@view_config(route_name='upload', renderer='templates/upload.pt')
+	def upload(self):
+		if not self.logged_in:
+			self.request.session['came_from'] = '/upload'
+			return HTTPFound(self.request.route_url('login'))
+		return {}
+	
 @view_config(route_name='upload_replay', request_method='POST')
 def upload_replay(request):
 	# check if a file was even uploaded
@@ -210,7 +130,7 @@ def upload_replay(request):
 		team[player['summoner']] = player_data
 				
 	# open/create the replay database
-	gd = GraphDatabase(db_location)
+	gd = GraphDatabase(DB_LOCATION)
 	# most of the replay properties
 	title = request.POST['title']
 	if not title:
@@ -234,7 +154,7 @@ def upload_replay(request):
 	
 	# put the filename, and location into the replay node
 	filename = str(replay_node.id) + '.lrf'
-	location = replay_folder_location + filename
+	location = REPLAY_FOLDER_LOCATION + filename
 	 
 	replay_node.properties['filename'] = filename
 	replay_node.properties['location'] = location
@@ -263,17 +183,17 @@ def download_replay(request):
 					content_type='application/force-download',
 					content_disposition='attachment; filename=' + filename,
 					)
-	response.app_iter = open(replay_folder_location + filename, 'rb')
-	response.content_length = os.path.getsize(replay_folder_location + filename)
+	response.app_iter = open(REPLAY_FOLDER_LOCATION + filename, 'rb')
+	response.content_length = os.path.getsize(REPLAY_FOLDER_LOCATION + filename)
 	return response
-
+	
 @view_config(route_name='register', renderer='templates/register.pt')
 def register(self, request):
 	error_message = ''
 	username = ''
 	email_address = ''
 	password = ''
-	came_from = '/'
+	came_from = '/replays'
 	
 	# see where the user came from
 	session = request.session
@@ -285,7 +205,7 @@ def register(self, request):
 		email_address = request.params['email_address']
 		password = request.params['password']
 		# open/create the database containing our user nodes
-		gd = GraphDatabase(db_location)
+		gd = GraphDatabase(DB_LOCATION)
 		user_nodes = gd.graph.findNodesByProperty('type', 'user')
 		
 		if len(username) < 3:
@@ -312,7 +232,8 @@ def register(self, request):
 							'salt': salt,
 							'date_registered': datetime.now(),
 							}
-			gd.graph.addNode(properties=user_properties)
+			user_node = gd.graph.addNode(properties=user_properties)
+			user_node.properties['userid'] = user_node.id
 			gd.save()
 			
 			# authenticate the newly registered user
@@ -335,7 +256,7 @@ def login(self, request):
 	message = ''
 	username = ''
 	password = ''
-	came_from = '/'
+	came_from = '/replays'
 	
 	# see where the user came from
 	session = request.session
@@ -347,7 +268,7 @@ def login(self, request):
 		password = request.params['password']
 		came_from = request.params['came_from']
 		# open/create our userdb
-		usersdb = GraphDatabase(db_location)
+		usersdb = GraphDatabase(DB_LOCATION)
 		users_graph = usersdb.graph
 		possible_users = users_graph.findNodesByProperty('username', username)
 		        
@@ -377,178 +298,3 @@ def logout(self, request):
     headers = forget(request)
     return HTTPFound(location='/replays', headers=headers)
    
-replay_folder_location = 'lolreplaysite/replays/'
-main_menu_items = (
-					{'name': 'Replays',
-					'href': '/replays',
-					},
-					{'name': 'FAQ',
-					'href': '/faq'
-					},
-					{'name': 'Feedback',
-					'href': '/feedback',
-					},
-					{'name': 'Upload',
-					'href': '/upload',
-					}
-					)
-user_menu_items = (
-					{
-					'name': 'Notifications',
-					'src': '{mail_icon}',
-					'href': '/users/{userid}/{username}/notifications',
-					},
-					{
-					'name': 'Your Replays',
-					'href': '/users/{userid}/{username}/replays',
-					},
-					{
-					'name': 'Your Reviews',
-					'href': '/users/{userid}/{username}/reviews',
-					},
-					)
-
-heroes = {
-    'ahri':103,
-    'akali':84,
-    'alistar':12,
-    'amumu':32,
-    'anivia':34,
-    'annie':1,
-    'ashe':22,
-    'blitzcrank':53,
-    'brand':63,
-    'caitlyn':51,
-    'cassiopeia':69,
-    "chogath":31,
-    "corki":42,
-    'drmundo':36,
-    'evelynn':28,
-    'ezreal':81,
-    'fiddlesticks':9,
-    'fiora':114,
-    'fizz':105,
-    'galio':3,
-    'gangplank':41,
-    'garen':86,
-    'gragas':79,
-    'graves':104,
-    'heimerdinger':74,
-    'irelia':39,
-    'janna':40,
-    'jarvaniv':59,
-    'jax':24,
-    'karma':43,
-    'karthus':30,
-    'kassadin':38,
-    'katarina':55,
-    'kayle':10,
-    'kennen':85,
-    "kogmaw":96,
-    'leblanc':7,
-    'leesin':64,
-    'leona':89,
-    'lulu':117,
-    'lux':99,
-    'malphite':54,
-    'malzahar':90,
-    'maokai':57,
-    'masteryi':11,
-    'missfortune':21,
-    'mordekaiser':82,
-    'morgana':25,
-    'nasus':75,
-    'nautilus':111,
-    'nidalee':76,
-    'nocturne':56,
-    'nunu':20,
-    'olaf':2,
-    'orianna':61,
-    'pantheon':80,
-    'poppy':78,
-    'rammus':33,
-    'renekton':58,
-    'riven':92,
-    'rumble':68,
-    'ryze':13,
-    'sejuani':113,
-    'shaco':34,
-    'shen':98,
-    'shyvana':102,
-    'singed':27,
-    'sion':14,
-    'sivir':15,
-    'skarner':72,
-    'sona':37,
-    'soraka':16,
-    'swain':50,
-    'talon':91,
-    'taric':44,
-    'teemo':17,
-    'tristana':18,
-    'trundle':48,
-    'tryndamere':23,
-    'twisted fate':4,
-    'twitch':29,
-    'udyr':77,
-    'urgot':6,
-    'vayne':67,
-    'veigar':45,
-    'viktor':112,
-    'vladimir':8,
-    'volibear':106,
-    'warwick':19,
-    'wukong':62,
-    'xerath':101,
-    'xinzhao':5,
-    'yorick':83,
-    'ziggs':115,
-    'zilean':26,
-}
-heroes = defaultdict(int, heroes)
-
-# helper functions
-def get_hashed_password(password, salt):
-	return hashlib.sha512(bytes(password + salt, 'utf-8')).hexdigest()
-
-def global_layout():
-	renderer = get_renderer("templates/main.pt")
-	layout = renderer.implementation().macros['layout']
-	return layout
-
-def main_menu(request):
-	menu_items = main_menu_items
-	
-	for menu_item in menu_items:
-		route_matched = request.matched_route.match(menu_item['href'])
-		if route_matched != None:
-			menu_item['active'] = True
-		else:
-			menu_item['active'] = False
-	return menu_items
-	
-def user_menu(request):
-	menu_items = user_menu_items
-	
-	gd = GraphDatabase(db_location)
-	username = authenticated_userid(request)
-	if not username:
-		return {}
-	userid = gd.graph.findNodesByProperty('username', username)[0].id
-	string_map = {'userid': userid, 'username':username}
-	
-	for menu_item in menu_items:
-		route_matched = request.matched_route.match(menu_item['href'])
-		if route_matched != None:
-			menu_item['active'] = True
-		else:
-			menu_item['active'] = False
-		
-		if menu_item['name'] == 'Notifications':
-			menu_item['src'] = menu_item['src'].format_map({'mail_icon': request.static_url('lolreplaysite:static/orange_mail_icon_small.png')})
-		
-		menu_item['href'] = menu_item['href'].format_map(string_map)
-	
-	return menu_items
-	
-	

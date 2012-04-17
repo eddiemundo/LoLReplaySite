@@ -35,6 +35,16 @@ body {
   padding: 0.3em 0 0.3em 0; }
   #user_bar > li {
     display: inline-block; }
+    #user_bar > li.user_menu {
+      padding-right: 0.5em;
+      border-right: 1px solid #ff8800; }
+    #user_bar > li.username {
+      float: right;
+      padding-right: 0.5em;
+      border-right: 1px solid #ff8800; }
+    #user_bar > li.logout {
+      float: right;
+      padding-left: 0.5em; }
   #user_bar .mail_icon {
     height: 1.2em;
     vertical-align: bottom; }

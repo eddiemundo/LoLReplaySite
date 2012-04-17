@@ -10,7 +10,6 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 	padding: 0;
 }
 
-
 body {
 	font-family: "Consolas", "Monaco", "Lucida Console";
 	color: $orange;
@@ -47,7 +46,6 @@ body {
 	
 }
 
-
 #user_bar {
 	$margin-top-bot: 1em;
 	$padding-top-bot: 0.3em;
@@ -58,6 +56,19 @@ body {
 	padding: $padding-top-bot 0 $padding-top-bot 0;
 	&>li {
 		display: inline-block;
+		&.user_menu {
+			padding-right: 0.5em;
+			border-right: 1px solid $orange;
+		}
+		&.username {
+			float:right;
+			padding-right: 0.5em;
+			border-right: 1px solid $orange;
+		}
+		&.logout {
+			float: right;
+			padding-left: 0.5em;
+		}
 	}
 	.mail_icon {
 		height:1.2em;

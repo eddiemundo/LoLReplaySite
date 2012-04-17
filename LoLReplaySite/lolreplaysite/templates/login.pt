@@ -2,8 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	  xml:lang="en"
 	  xmlns:tal="http://xml.zope.org/namespaces/tal"
-	  xmlns:metal="http://xml.zope.org/namespaces/metal"
-	  metal:define-macro="layout">
+	  xmlns:metal="http://xml.zope.org/namespaces/metal">
 
 <head>
 	<title>I'm Not Fucking Around: A LoL Replay Site</title>

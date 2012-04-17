@@ -16,11 +16,12 @@
 <body>
 <div>
 	<ul id="user_bar">
-		<li tal:condition="not logged_in">
+		<li tal:condition="not view.logged_in">
 			<a href="/login">Log in</a>
 		</li>
-		<li tal:condition="logged_in"
-			tal:repeat="menu_item user_menu_items">
+		<li class="user_menu"
+			tal:condition="view.logged_in"
+			tal:repeat="menu_item view.user_menu_items">
 			<a href="${menu_item['href']}"
 			   tal:condition="menu_item['name'] == 'Notifications'">
 				<img class='mail_icon'
@@ -31,15 +32,17 @@
 			   ${menu_item['name']}
 			</a>
 		</li>
-		<li tal:condition="logged_in">
-			${logged_in}
-		</li>
-		<li tal:condition="logged_in">
+		<li class="logout"
+			tal:condition="view.logged_in">
 			<a href="/logout">Log out</a>
+		</li>
+		<li class="username"
+			tal:condition="view.logged_in">
+			${view.logged_in}
 		</li>
 	</ul>
 	<img class="logo" /><ul id="main_menu"
-		tal:define="menu_items main_menu_items">
+		tal:define="menu_items view.main_menu_items">
 		<li tal:repeat="menu_item menu_items"
 			tal:switch="menu_item['active']">					
 			<a tal:case="True" 

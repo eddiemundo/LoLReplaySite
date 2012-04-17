@@ -6,7 +6,7 @@ my_session_factory = UnencryptedCookieSessionFactoryConfig('sekrit2')
 
 from lolreplaysite.security import groupfinder
 
-
+	
 
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
@@ -20,6 +20,9 @@ def main(global_config, **settings):
 																		reissue_time=120),
 						session_factory = my_session_factory,
 						)
+    
+    #config.set_request_property(get_user, 'user', reify=True)
+    
     config.add_static_view('static', 'static', cache_max_age=3600)
 
     config.add_route('replays', '/replays')
@@ -40,4 +43,7 @@ def main(global_config, **settings):
     config.add_route('logout', '/logout')
     
     config.scan()
+    
+    
+    
     return config.make_wsgi_app()

@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<metal:main use-macro="layout">
+<metal:main use-macro="view.layout">
 <metal:main metal:fill-slot="content">
 
 <form action="/upload_replay" method="post" accept-charset="utf-8" enctype="multipart/form-data">
