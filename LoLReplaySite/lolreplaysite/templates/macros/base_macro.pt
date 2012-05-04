@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xml:lang="en"
+	  xmlns:tal="http://xml.zope.org/namespaces/tal"
+	  xmlns:metal="http://xml.zope.org/namespaces/metal"
+	  metal:define-macro="base_macro">
+	<head>
+		<title>I'm Not Fucking Around: A LoL Replay Site</title>
+		<meta http-equiv="Content-Type"
+			  content="text/html;charset=UTF-8" />
+		<link rel="stylesheet"
+			  href="${request.static_url('lolreplaysite:static/main.css')}"
+			  type="text/css"
+			  media="screen"
+			  charset="utf-8" />
+		<script src="${request.static_url('lolreplaysite:static/jquery-1.7.2.min.js')}"></script>
+	</head>
+	<body>
+		<div id='base-container'>
+			<ul id="user_menu">
+				<li tal:condition="not view.logged_in">
+					<a href="/login">Log in</a>
+				</li>
+				<tal:block tal:condition="view.logged_in">
+					<li>
+						<a href="#">
+							<img class='mail_icon' src="${request.static_url('lolreplaysite:static/mail_icon.png')}" />(0)
+						</a>
+					</li>
+					<li tal:repeat="menu_item view.user_menu_items" 
+						class="user_menu_item">
+						<a href="${menu_item['href']}">
+						   ${menu_item['label']}
+						</a>
+					</li>
+					<li class="logout">
+						<a href="/logout">Log out</a>
+					</li>
+					<li class="username">
+						${view.logged_in}
+					</li>
+				</tal:block>
+			</ul>
+			<img id="logo" />
+			<ul id="main_menu">
+				<li tal:repeat="menu_item view.main_menu_items">					
+					<a class="active_tab"
+					   href="${menu_item['href']}">${menu_item['label']}</a>
+				</li>
+			</ul>
+			<div id="content">
+				<metal:base define-slot="content" />
+			</div>
+		</div>
+	</body>
+</html>

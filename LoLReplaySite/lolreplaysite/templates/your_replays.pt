@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<ul id="stuff_menu">
+			<li><a href="#">All Your Replays</a></li>
+			<li><a href="#">Reviewed Replays Only</a></li>
+		</ul>
+		<metal:block use-macro="view.replays_macro">
+			<metal:block fill-slot="replay_options">
+				<a class="match_details"
+				   href="${request.route_url('yourreplaystuff-replays-replay_id-comments', replay_id=replay['id'])}">Match Details/Comments(${replay['num_comments']})/Reviews(${replay['num_reviews']})</a>
+				<a class="hide"
+				   href="#">Hide</a>
+				<a class="delete" href=#>Delete</a>
+			</metal:block>
+		</metal:block>
+	</metal:block>
+</metal:block>

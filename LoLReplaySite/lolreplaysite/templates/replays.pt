@@ -1,69 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<metal:main use-macro="view.layout">
-<metal:main metal:fill-slot="content">
-<ul id="replay_list">
-	<li 
-	tal:repeat="replay replay_list"
-	class="${'even' if repeat.replay.even else ''}">
-		<div>
-			<span class="replay_title">${replay['title']}</span>
-			<div class="upload_info">
-				<span>Played on ${replay['date_recorded']} by</span>
-				<img class='uploader_image' title="${replay['pov']['summoner_name']} as ${replay['pov']['champion_name']}" src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.136/content/champion/icons/${replay['pov']['champion_id']}.jpg" />
-				<span>${replay['pov']['summoner_name']}</span>
-			</div>
-		</div>
-		<div>
-			<img
-			tal:repeat="player replay['blue_team']"
-			class='hero_image'
-			title="${player['summoner_name']} as ${player['champion_name']}"
-			src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.136/content/champion/icons/${player['champion_id']}.jpg"
-			/>
-			<span class="vs">vs</span>
-			<img
-			tal:repeat="player replay['purple_team']"
-			class='hero_image'
-			title="${player['summoner_name']} as ${player['champion_name']}"
-			src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.136/content/champion/icons/${player['champion_id']}.jpg"
-			/>
-			<span class="length">Length: ${replay['length']}</span>
-		</div>
-		<div>
-			<span class="match_details">Match Details/Comments(0)</span>
-			<span class="download"><a href="/download/replay/${replay['filename']}">Download</a></span>
-		</div>
-	</li>
-	<li tal:repeat="replay replay_list">
-		<div>
-			<span>WWWWWWWWWW</span>
-			<div class="upload_info">
-				<span>Played on Wed 05/04/12 by</span>
-				<img class='uploader_image' />
-				<span>WWWWWWWWWW</span>
-			</div>
-		</div>
-		<div>
-			<img
-			tal:repeat="player replay['blue_team']"
-			class='hero_image'
-			title="${player['summoner_name']} as ${player['champion_name']}"
-			src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.136/content/champion/icons/${player['champion_id']}.jpg"
-			/>
-			<span class="vs">vs</span>
-			<img
-			tal:repeat="player replay['purple_team']"
-			class='hero_image'
-			title="${player['summoner_name']} as ${player['champion_name']}"
-			src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.136/content/champion/icons/${player['champion_id']}.jpg"
-			/>
-			<span class="length">Length: ${replay['length']}</span>
-		</div>
-		<div>
-			<span class="match_details">Match Details/Comments(0)</span>
-			<span class="download"><a href="/download/replay/${replay['filename']}">Download</a></span>
-		</div>
-	</li>
-</ul>
-</metal:main>
-</metal:main>
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<metal:block use-macro="view.replays_macro">
+			<metal:block fill-slot="replay_options">
+				<a class="match_details"
+				   href="replays/${replay['id']}">Match Details/Comments(${replay['num_comments']})</a>
+			</metal:block>
+		</metal:block>
+	</metal:block>
+</metal:block>

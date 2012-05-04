@@ -1,0 +1,17 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<ul id="stuff_menu">
+			<li>Reviews: <a href="${request.route_url('yourreviewstuff-reviewsaskedofyou')}">asked of you</a></li>
+			<li><b>asked of others</b></li>
+			<li><a href="#">you have done</a></li>
+			<li><a href="#">of your replays</a></li>
+		</ul>
+		<br />
+		<ul class="ask_for_review_notifications">
+			<li tal:repeat="asker_and_replay askers_and_replays">
+				You have asked ${asker_and_replay[0].username} to review <a href="#">"${asker_and_replay[1].title}"</a>
+			</li>
+		</ul>
+	</metal:block>
+</metal:block>

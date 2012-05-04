@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block define-macro="replay_macro">
+<h2>${title}</h2>
+<table id="replay_info">
+	<tr><th>POV</th><td>${pov}</td></tr>
+	<tr><th>Length</th><td>${length}</td></tr>
+	<tr><th>Client Version</th><td>${client_version}</td></tr>
+	<tr><th>Recorder Version</th><td>${recorder_version}</td></tr>
+	<tr><th>Description</th><td>${description}</td></tr>
+</table>
+<div id="match_info_title"><b>Match Info</b></div>
+<table id="match_info">
+	<tal:block tal:repeat="team teams">
+		<tr tal:repeat="player team">
+			<td class="summoner_image"><img src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.137/content/champion/icons/${player['champion_id']}.jpg" /></td>
+			<td class="level">${player['level']}</td>
+			<td class="name">${player['summoner_name']}<p class="champion_name">${player['champion_name']}</p></td>
+			<td class="kda">${player['kills']}/${player['deaths']}/${player['assists']}</td>
+			<td class="summoner_spells">
+				<img tal:repeat="summoner_spell_id player['summoner_spells']" 
+					 src="http://www.leaguereplays.com/static/images/spells/32/${summoner_spell_id}.png" />
+			</td>
+			<td tal:repeat="item_id player['items']">
+				<img tal:condition="item_id is not None" 
+					 src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.137/content/item/${item_id}.png" />
+			</td>
+			<td class="gold">${player['gold']}</td>
+			<td class="minions">${player['lane_minions_killed'] + player['neutral_minions_killed']}</td>
+		</tr>
+		<tr tal:condition="repeat.team.even" 
+			class="hr"><td colspan=13><div /></td></tr>
+	</tal:block>
+
+</table>
+
+<metal:block define-slot="tab-content" />
+</metal:block>

@@ -3,31 +3,30 @@
 	  xml:lang="en"
 	  xmlns:tal="http://xml.zope.org/namespaces/tal"
 	  xmlns:metal="http://xml.zope.org/namespaces/metal">
-
-<head>
-	<title>I'm Not Fucking Around: A LoL Replay Site</title>
-	<meta http-equiv="Content-Type"
-		  content="text/html;charset=UTF-8" />
-	<link rel="stylesheet"
-		  href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
-</head>
-<body>
-<div class="login">
-<h1>${page_title}</h1>
-
-
-
-<form action="/register" method="post">
-	<input type="hidden" name="came_from" value="${came_from}"/>
-	<label>Username</label><br />
-	<input type="text" name="username" value="${username}" /><br />
-    <label>Email</label><br />
-    <input type="text" name="email_address" value="${email_address}" /><br />
-    <label>Password</label><br />
-    <input type="password" name="password" value="${password}" /><br />
-    <p><em>${error_message}</em></p>
-    <input type="submit" name="form.submitted" value="Register" />
-</form>
-</div>
-</body>
+	<head>
+		<title>I'm Not Fucking Around: A LoL Replay Site</title>
+		<meta http-equiv="Content-Type"
+			  content="text/html;charset=UTF-8" />
+		<link rel="stylesheet"
+			  href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
+	</head>
+	<body>
+		<div id="login_container">
+			<h1>Register</h1>
+			<form action="${request.route_url('register')}" method="post">
+				<label>Username</label>
+				<input id="username" type="text" name="username" value="${username}" />
+			    <label>Email</label>
+			    <input id="email_address" type="text" name="email_address" value="${email_address}" />
+			    <label>Password</label>
+			    <input id="password" type="password" name="password" value="${password}" autocomplete="off" />
+			    <div>
+			    	<p><em>${error_message1}</em></p>
+			    	<p><em>${error_message2}</em></p>
+			    	<p><em>${error_message3}</em></p>
+			    </div>
+			    <input id="submit" type="submit" name="form.submitted" value="Register" />
+			</form>
+		</div>
+	</body>
 </html>

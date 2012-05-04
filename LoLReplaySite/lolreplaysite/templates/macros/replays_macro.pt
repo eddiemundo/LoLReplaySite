@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<ul metal:define-macro="replays_macro" 
+	id="replays">
+	<li tal:repeat="replay replays">
+		<div>
+			<span class="replay_title">"${replay['title']}"</span>
+			<span class="upload_info">
+				<span>Played on ${replay['date_recorded']} by</span>
+				<img title="${replay['pov_summoner_name']} as ${replay['pov_champion_name']}" src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.137/content/champion/icons/${replay['pov_champion_id']}.jpg" />
+				<span>${replay['pov_summoner_name']}</span>
+			</span>
+		</div>
+		<div class="middle">
+			<tal:block tal:repeat="team replay['teams']">
+				<img
+				tal:repeat="player team"
+				title="${player['summoner_name']} as ${player['champion_name']}"
+				src="http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.137/content/champion/icons/${player['champion_id']}.jpg"
+				/>
+				<span tal:condition="repeat.team.even" 
+					  class="vs">vs</span>
+			</tal:block>
+			<span class="length">Length: ${replay['length']}</span>
+		</div>
+		<div>
+			<metal:block define-slot="replay_options" />
+			<a class="download"
+			   href="/download/replay/${replay['filename']}">Download</a>
+		</div>
+	</li>
+</ul>

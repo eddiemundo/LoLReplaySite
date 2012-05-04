@@ -1,0 +1,15 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<metal:block use-macro="view.replay_macro">
+			<metal:block fill-slot="tab-content">
+				<ul id="comments_reviews_menu">
+					<li id="comments-menu-item"><b>Comments(${len(comments)})</b></li>
+					<li><a id="reviews-menu-item" 
+						   href="${request.route_url('yourreplaystuff-replays-replay_id-reviews', replay_id=replay_id)}"><b>Reviews(${num_reviews})</b></a></li>
+				</ul>
+				<metal:block use-macro="view.comments_macro" />
+			</metal:block>
+		</metal:block>
+	</metal:block>
+</metal:block>

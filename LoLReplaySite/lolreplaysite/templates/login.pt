@@ -3,28 +3,25 @@
 	  xml:lang="en"
 	  xmlns:tal="http://xml.zope.org/namespaces/tal"
 	  xmlns:metal="http://xml.zope.org/namespaces/metal">
-
-<head>
-	<title>I'm Not Fucking Around: A LoL Replay Site</title>
-	<meta http-equiv="Content-Type"
-		  content="text/html;charset=UTF-8" />
-	<link rel="stylesheet"
-		  href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
-</head>
-<body>
-<div class="login">
-<h1>${page_title}</h1>
-
-<form action="/login" method="post">
-    <input type="hidden" name="came_from" value="${came_from}"/>
-    <label>Username</label><br />
-    <input type="text" name="username" value="${username}" /><br/>
-    <label>Password</label><br />
-    <input type="password" name="password" value="${password}" /><br/>
-    <p><em>${message}</em></p>
-    <input type="submit" name="form.submitted" value="Log In" />
-</form>
-Don't have an account? Then <a href="/register">register</a>.<br />
-</div>
-</body>
+	<head>
+		<title>I'm Not Fucking Around: A LoL Replay Site</title>
+		<meta http-equiv="Content-Type"
+			  content="text/html;charset=UTF-8" />
+		<link rel="stylesheet"
+			  href="${request.static_url('lolreplaysite:static/main.css')}" type="text/css" media="screen" charset="utf-8" />
+	</head>
+	<body>
+		<div id="login_container">
+			<h1>Login</h1>
+			<form action="${request.route_url('login')}" method="post">
+			    <label>Username</label>
+			    <input id="username" type="text" name="username" value="${username}" />
+			    <label>Password</label>
+			    <input id="password" type="password" name="password" value="${password}" autocomplete="off" />
+			    <div><p><em>${message}</em></p></div>
+			    <input id="submit" type="submit" name="form" value="Log In" />
+			</form>
+			Don't have an account? Then <a href="/register">register</a>.
+		</div>
+	</body>
 </html>

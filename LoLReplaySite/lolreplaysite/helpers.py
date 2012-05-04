@@ -1,64 +1,66 @@
 from lolreplaysite.constants import *
 from pyramid.security import authenticated_userid
 import struct, json, os, hashlib, uuid, re, logging
-from GraphDatabase import GraphDatabase
+from graphdatabase import GraphDatabase
 log = logging.getLogger(__name__)
+
+def suffix(d):
+    return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
+
+def custom_strftime(format, t):
+    return t.strftime(format).replace('{S}', str(t.day) + suffix(t.day))
 
 def get_hashed_password(password, salt):
 	return hashlib.sha512(bytes(password + salt, 'utf-8')).hexdigest()
 
-def get_parsed_replay_list(replay_nodes):
-	"""Returns a list of dicts containing relevant replay info for a view""" 
+def get_replays(replay_nodes):
 	replays = []
-	# code is a bit sloppy
-	for node in replay_nodes:
-		length = node.properties['length']
-		blue_team = node.properties['blue_team']
-		purple_team = node.properties['purple_team']
-		pov_summoner_name = node.properties['pov']
-		pov_champion_id = ''
-		pov_champion_name = ''
-		team = None
-		if pov_summoner_name in blue_team:
-			team = blue_team
-		elif pov_summoner_name in purple_team:
-			team = purple_team
-		pov_champion_id = str(HEROES[team[pov_summoner_name]['champion_name'].lower()])
-		pov_champion_name = team[pov_summoner_name]['champion_name']
-			
+	for replay_node in replay_nodes:
+		pov_summoner_name = replay_node.pov
+		pov_champion_name = None
+		pov_champion_id = None
+		blue_team = []
+		purple_team = []
+		for team, result in ((replay_node.blue_team, blue_team),
+							(replay_node.purple_team, purple_team)):
+			for player in team:
+				if player['summoner_name'] == pov_summoner_name:
+					pov_champion_name = player['champion_name']
+					pov_champion_id = str(HEROES[pov_champion_name.lower()])
+				player_data = {
+							'summoner_name': player['summoner_name'],
+							'champion_name': player['champion_name'],
+							'champion_id': player['champion_id'],
+							}
+				result.append(player_data)
 		replay = {
-				'pov': {
-					'summoner_name': pov_summoner_name,
-					'champion_id': pov_champion_id,
-					'champion_name': pov_champion_name,
-					},
-				'title': node.properties['title'],
-				'length': "{0}:{1}:{2}".format(length//3600, length//60, length % 60),
-				'date_recorded': node.properties['date_recorded'].strftime("%a %d-%m-%y"),
-				'blue_team': [
-							{
-							'summoner_name': summoner,
-							'champion_id': str(HEROES[blue_team[summoner]['champion_name'].lower()]),
-							'champion_name': blue_team[summoner]['champion_name'],
-							} for summoner in blue_team],
-				'purple_team': [
-							{
-							'summoner_name': summoner,
-							'champion_id': str(HEROES[purple_team[summoner]['champion_name'].lower()]),
-							'champion_name': purple_team[summoner]['champion_name'],
-							} for summoner in purple_team],
-				'filename': node.properties['filename']
+				'id': replay_node.id,
+				'title': replay_node.title,
+				'length': "{0}:{1}:{2}".format(replay_node.length//3600,
+											replay_node.length//60,
+											replay_node.length % 60),
+				'date_recorded': replay_node.date_recorded.strftime("%a %d-%m-%y"),
+				'pov_summoner_name': pov_summoner_name,
+				'pov_champion_name': pov_champion_name,
+				'pov_champion_id': pov_champion_id,
+				'blue_team': blue_team,
+				'purple_team': purple_team,
+				'filename': replay_node.filename,
 				}
 		replays.append(replay)
 	return replays
 
+
+class stupid(object):
+	db = None
+
 def get_user(request):
 	username = authenticated_userid(request)
 	if username:
-		g = GraphDatabase(DB_LOCATION).graph
-		user_nodes = g.findNodesByProperty('type', 'user')
-		user_node = g.findNodesByProperty('username', username, user_nodes)[0]
-		return user_node.properties
+		stupid.db = GraphDatabase(HOST, PORT, DB_LOCATION)
+		g = stupid.db.graph
+		user = g.node(type='user', username=username)
+		return user.properties
 	else:
 		return None
 

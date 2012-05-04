@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<metal:block use-macro="view.replay_macro">
+			<metal:block fill-slot="tab-content">
+				<ul id="comments_reviews_menu">
+					<li><a id="comments-menu-item" 
+						   href="${request.route_url('yourreplaystuff-replays-replay_id-comments', replay_id=replay_id)}"><b>Comments(${len(comments)})</b></a></li>
+					<li id="reviews-menu-item"><b>Reviews(${num_reviews})</b></li>
+				</ul>
+				
+				<div id="reviews-container">
+					<div id="ask_for_a_review">
+						<span>Ask for a review from:</span>
+							<form name="ask" action="${request.route_url('ask_for_review', replay_id=replay_id)}" method="post"> 
+								<select name="username">
+									<option tal:repeat="username askable_usernames">${username}</option>
+								</select>
+								<input name="form" type="submit" value="Ask" onClick=doIt(1) /> <em tal:condition="request.session.peek_flash('asked_successfully')" class="green">${request.session.pop_flash('asked_successfully')[0]}</em><em tal:condition="request.session.peek_flash('asked_error')" class="error">${request.session.pop_flash('asked_error')[0]}</em>
+							</form>
+					</div>
+					<div tal:condition="reviewer_usernames">
+						<span>Currently displaying review by:</span>
+						<form id="reviewer" action="" method="post">
+							<select>
+								<option tal:repeat="username reviewer_usernames">${username}</option>
+							</select>
+							<input type="submit" value="Display" />
+						</form>
+					</div>
+					<div>
+						<span class="reviewer_instructions">
+							<b>From the reviewee:<em tal:condition="not owner_comment">*</em></b>
+							<em tal:condition="request.session.peek_flash('success_queue')" class="green">${request.session.pop_flash('success_queue')[0]}</em>
+							<em tal:condition="request.session.peek_flash('error_queue')" class="error">${request.session.pop_flash('error_queue')[0]}</em></span><span class="reviewer_responses"><b>From the reviewer:</b></span>
+						<form name="save" action="${request.route_url('save_owner_comment', replay_id=replay_id)}" method="post">
+							<div class="pair">
+								<textarea class="owner_comment"
+										  name="owner_comment">${'' if not owner_comment else owner_comment}</textarea>
+								<span tal:condition="num_reviews == 0" 
+									  class="reviewer_comment">${not_reviewed_msg}</span>
+								
+							</div>
+						
+							<input name="form" type="submit" value="Save" />
+						</form>
+						<span class="reviewee"></span>
+					</div>
+				</div>
+<script>
+$('form[name="ask"]').submit(function() {
+	value = $('.owner_comment').val()
+	$('.owner_comment').clone().hide().val(value).appendTo('form[name="ask"]');
+});
+</script>
+			</metal:block>
+		</metal:block>
+	</metal:block>
+</metal:block>

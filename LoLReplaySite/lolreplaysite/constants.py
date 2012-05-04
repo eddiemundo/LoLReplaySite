@@ -1,6 +1,7 @@
 from collections import defaultdict
-
-DB_LOCATION = 'lolreplaysite/databases/lolreplaysite.gd'
+HOST = 'localhost'
+PORT = 12345
+DB_LOCATION = 'C:/Users/Shenra/git/LoLReplaySite/LoLReplaySite/lolreplaysite/databases/lolreplaysite.gd'
 MAIN_MENU_ITEMS = (
 				{'name': 'Replays',
 				'href': '/replays',
@@ -30,6 +31,7 @@ USER_MENU_ITEMS = (
 				'href': '/users/{userid}/{username}/reviews',
 				},
 				)
+
 REPLAY_FOLDER_LOCATION = 'lolreplaysite/replays/'
 HEROES = defaultdict(int, {
 						'ahri':103,
