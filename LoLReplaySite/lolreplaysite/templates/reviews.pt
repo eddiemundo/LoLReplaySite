@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<metal:block use-macro="view.replay_macro" />
+		<ul id="comments_reviews_menu">
+				<li id="comments-menu-item">
+					<a href="${comments_href}">Comments(0)</a>
+				</li>
+				<li tal:condition="view.logged_in_user or (view.logged_in_user != owner and view.logged_in_user not in reviewers and view.logged_in_user not in users_asked_to_review)"
+					id="reviews-menu-item">
+					<span tal:condition="view.logged_in_user == owner"><b>Reviews(0)</b></span>
+					<span tal:condition="view.logged_in_user in reviewers"><b>Your Review</b></span>
+					<span tal:condition="view.logged_in_user in users_asked_to_review"><b>Review this Replay</b></span>
+				</li>
+			</ul>
+		<metal:block use-macro="view.reviews_macro" />
+	</metal:block>
+</metal:block>

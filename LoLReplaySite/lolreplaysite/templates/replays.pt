@@ -2,10 +2,10 @@
 <metal:block use-macro="view.base_macro">
 	<metal:block fill-slot="content">
 		<metal:block use-macro="view.replays_macro">
-			<metal:block fill-slot="replay_options">
-				<a class="match_details"
-				   href="replays/${replay['id']}">Match Details/Comments(${replay['num_comments']})</a>
-			</metal:block>
+<!-- 			<metal:block fill-slot="replay_options"> -->
+<!-- 				<a class="match_details" -->
+<!-- 				   href="replays/${replay['id']}">Match Details/Comments(${replay['num_comments']})</a> -->
+<!-- 			</metal:block> -->
 		</metal:block>
 	</metal:block>
 </metal:block>

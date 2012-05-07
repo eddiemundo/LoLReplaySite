@@ -51,24 +51,43 @@ def main(global_config, **settings):
 	
 	#working
 	
-	config.add_route('test', '/test')
+	#config.add_route('test', '/test')
+	config.add_route('register', '/register')
 	config.add_route('login', '/login')
 	config.add_route('logout', '/logout')
+	
 	config.add_route('replays', '/replays')
-	config.add_route('replay', '/replays/{replay_id}')
-	config.add_route('register', '/register')
-	config.add_route('download_replay', '/download/replay/{id}.{ext}')
+	config.add_route('comments', '/replays/{replay_id}/comments')
+	config.add_route('reviews', '/replays/{replay_id}/reviews')
+	config.add_route('ask_for_review', '/replays/{replay_id}/ask-for-review')
+	config.add_route('save_reviewee_comment', '/replays/{replay_id}/save-reviewee-comment')
+	config.add_route('save_reviewer_comment', '/replays/{replay_id}/save-reviewer-comment')
+	
+	
 	config.add_route('your_replays', '/your-replay-stuff/replays')
-	config.add_route('yourreplaystuff-replays-replay_id-comments', '/your-replay-stuff/replays/{replay_id}/comments')
-	config.add_route('yourreplaystuff-replays-replay_id-reviews', '/your-replay-stuff/replays/{replay_id}/reviews')
-	config.add_route('save_owner_comment', '/save_owner_comment/{replay_id}')
+	config.add_route('your_reviewed_replays', '/your-replay-stuff/reviewed-replays')
+	
+	config.add_route('reviews_asked_of_you', '/your-review-stuff/reviews-asked-of-you')
+	config.add_route('reviews_asked_of_others', '/your-review-stuff/reviews-asked-of-others')
+	config.add_route('reviews_by_you', '/your-review-stuff/reviews-by-you')
+	config.add_route('reviews_by_others', '/your-review-stuff/reviews-by-others')
+	
+	config.add_route('faq', '/faq')
+	config.add_route('post_comment', '/replays/{replay_id}/post_comment')
 	
 	
-	config.add_route('yourreviewstuff-reviewsaskedofyou', '/your-review-stuff/reviews-asked-of-you')
-	config.add_route('yourreviewstuff-reviewsaskedofothers', '/your-review-stuff/reviews-asked-of-others')
+	config.add_route('download_replay', '/replays/{replay_id}/download')
+#	config.add_route('your_replays', '/your-replay-stuff/replays')
+#	config.add_route('yourreplaystuff-replays-replay_id-comments', '/your-replay-stuff/replays/{replay_id}/comments')
+#	config.add_route('yourreplaystuff-replays-replay_id-reviews', '/your-replay-stuff/replays/{replay_id}/reviews')
+#	config.add_route('save_owner_comment', '/save_owner_comment/{replay_id}')
+	
+	
+#	config.add_route('yourreviewstuff-reviewsaskedofyou', '/your-review-stuff/reviews-asked-of-you')
+#	config.add_route('yourreviewstuff-reviewsaskedofothers', '/your-review-stuff/reviews-asked-of-others')
 					 
 	config.add_route('upload', '/upload')
-	config.add_route('ask_for_review', '/ask_for_review/{replay_id}')
+#	config.add_route('ask_for_review', '/ask_for_review/{replay_id}')
 	config.add_route('upload_replay', '/upload_replay')
 	# replays view
 	
@@ -100,7 +119,7 @@ def main(global_config, **settings):
 #	config.add_route('login', '/login')
 #	
 #	# actions
-	config.add_route('comment_on_replay', '/replays/{replay_id}/comment')
+	#config.add_route('comment_on_replay', '/replays/{replay_id}/comment')
 #	config.add_route('upload_replay', '/upload_replay')
 
 #	config.add_route('logout', '/logout')

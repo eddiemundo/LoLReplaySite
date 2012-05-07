@@ -31,9 +31,11 @@ USER_MENU_ITEMS = (
 				'href': '/users/{userid}/{username}/reviews',
 				},
 				)
-
+ITEM_HREF = 'http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.137/content/item/{}.png'
+SUMMONER_SPELL_HREF = 'http://www.leaguereplays.com/static/images/spells/32/{}.png'
+CHAMPION_HREF = 'http://na.leagueoflegends.com/sites/default/files/game_data/1.0.0.137/content/champion/icons/{}.jpg'
 REPLAY_FOLDER_LOCATION = 'lolreplaysite/replays/'
-HEROES = defaultdict(int, {
+HERO_ID = defaultdict(int, {
 						'ahri':103,
 						'akali':84,
 						'alistar':12,

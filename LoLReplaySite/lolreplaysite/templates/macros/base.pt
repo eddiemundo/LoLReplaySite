@@ -3,7 +3,7 @@
 	  xml:lang="en"
 	  xmlns:tal="http://xml.zope.org/namespaces/tal"
 	  xmlns:metal="http://xml.zope.org/namespaces/metal"
-	  metal:define-macro="base_macro">
+	  metal:define-macro="base">
 	<head>
 		<title>I'm Not Fucking Around: A LoL Replay Site</title>
 		<meta http-equiv="Content-Type"
@@ -18,10 +18,10 @@
 	<body>
 		<div id='base-container'>
 			<ul id="user_menu">
-				<li tal:condition="not view.logged_in">
+				<li tal:condition="not view.logged_in_user">
 					<a href="/login">Log in</a>
 				</li>
-				<tal:block tal:condition="view.logged_in">
+				<tal:block tal:condition="view.logged_in_user">
 					<li>
 						<a href="#">
 							<img class='mail_icon' src="${request.static_url('lolreplaysite:static/mail_icon.png')}" />(0)
@@ -29,23 +29,28 @@
 					</li>
 					<li tal:repeat="menu_item view.user_menu_items" 
 						class="user_menu_item">
-						<a href="${menu_item['href']}">
+						<a tal:condition="not menu_item['active']"
+						   href="${menu_item['href']}">
 						   ${menu_item['label']}
 						</a>
+						<span tal:condition="menu_item['active']">
+							<b>${menu_item['label']}</b>
+						</span>
 					</li>
 					<li class="logout">
 						<a href="/logout">Log out</a>
 					</li>
 					<li class="username">
-						${view.logged_in}
+						${view.logged_in_user}
 					</li>
 				</tal:block>
 			</ul>
 			<img id="logo" />
 			<ul id="main_menu">
 				<li tal:repeat="menu_item view.main_menu_items">					
-					<a class="active_tab"
+					<a tal:condition="not menu_item['active']"
 					   href="${menu_item['href']}">${menu_item['label']}</a>
+					<span tal:condition="menu_item['active']">${menu_item['label']}</span>
 				</li>
 			</ul>
 			<div id="content">

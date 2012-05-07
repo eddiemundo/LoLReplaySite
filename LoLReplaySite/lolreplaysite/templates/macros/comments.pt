@@ -1,24 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <div metal:define-macro="comments"
 	 id="comments-container">
+	<span tal:condition="not len(comments)">${no_comments_text}</span>
 	<ul tal:condition="comments"
 		id="comments-list">
 		<li tal:repeat="comment comments" 
 			class="comment">
-			${comment.comment}
-			<div>Posted by ${comment.name} on ${comment.datetime}</div>
+			${comment.text}
+			<div>Posted by <i class="${'blue' if comment.is_user else ''}">${comment.author}</i> on ${comment.date_posted}</div>
 		</li>
 	</ul>
-	<form action="${request.route_url('comment_on_replay', replay_id=replay_id)}"
+	<form action="${post_comment_href}"
 		  method="post">
 		<label id="name-label">Name</label>
 		<input id="name"
-			   name="name"
+			   name="author"
 			   type="text"
-			   value="${'' if not view.logged_in else view.logged_in}"/>
+			   value="${default_name if not view.logged_in_user else view.logged_in_user}"/>
 		<label id="comment-label">Comment</label>
 		<textarea id="comment"
-				  name="comment"></textarea>
+				  name="text"></textarea>
+		<div tal:condition="request.session.peek_flash('comment_error')"
+			  class="error">${request.session.pop_flash('comment_error')[0]}</div>
 		<input id="post"
 			   name="form"
 			   type="submit"

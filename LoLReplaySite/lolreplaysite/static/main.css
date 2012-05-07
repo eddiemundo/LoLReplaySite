@@ -5,6 +5,12 @@
   margin: 0;
   padding: 0; }
 
+.error {
+  color: red; }
+
+.blue {
+  color: #38c7ff; }
+
 li {
   list-style: none; }
 
@@ -61,7 +67,7 @@ body {
   #main_menu li {
     float: left;
     margin: 0 0 0 16px; }
-    #main_menu li a {
+    #main_menu li a, #main_menu li span {
       display: inline-block;
       color: #a6a388;
       width: 96px;
@@ -69,9 +75,12 @@ body {
       border: 1px solid #a6a388;
       text-align: center;
       line-height: 56px; }
-      #main_menu li a:hover {
-        color: #ff8800;
-        border-color: #ff8800; }
+    #main_menu li a:hover {
+      color: #ff8800;
+      border-color: #ff8800; }
+    #main_menu li span {
+      color: #ff8800;
+      border: 1px solid #ff8800; }
 
 input, textarea {
   font-size: 1em;
@@ -186,15 +195,15 @@ input[type="text"], input[type="password"], textarea {
   overflow: auto; }
   #comments_reviews_menu li {
     float: left; }
-  #comments_reviews_menu #comments-menu-item {
-    margin-right: 16px;
-    border-right: 1px solid #ff8800;
-    padding-right: 16px; }
+  #comments_reviews_menu #reviews-menu-item {
+    margin-left: 16px;
+    border-left: 1px solid #ff8800;
+    padding-left: 16px; }
 
 #comments-container {
-  clear: left; }
+  clear: left;
+  padding-top: 16px; }
   #comments-container #comments-list {
-    margin-top: 16px;
     list-style: none; }
     #comments-container #comments-list .comment {
       margin-top: 16px;
@@ -253,10 +262,8 @@ input[type="text"], input[type="password"], textarea {
       background-color: #00050a;
       font-family: "Consolas", "Monaco", "Lucida Console";
       font-size: 1em; }
-  #reviews-container div {
+  #reviews-container > div {
     margin-bottom: 16px; }
-  #reviews-container .error {
-    color: red; }
   #reviews-container .reviewer_instructions {
     display: inline-block;
     width: 368px; }
@@ -272,10 +279,37 @@ input[type="text"], input[type="password"], textarea {
   height: 300px;
   resize: vertical;
   border: 1px solid #ff8800; }
+  .reviewer_comment textarea, .owner_comment textarea {
+    background-color: #00050a; }
 
 .ask_for_review_notifications li {
   margin-left: 32px;
   list-style: disc; }
+
+form[name="save_reviewee_comment"], form[name="save_reviewer_comment"] {
+  display: inline-block; }
+
+#save_reviewer_comment {
+  margin-left: 372px; }
+
+.review_stuff_menu {
+  display: inline-block;
+  vertical-align: bottom; }
+  .review_stuff_menu li:first-child {
+    margin-left: 0;
+    padding-left: 0;
+    border-left: none; }
+  .review_stuff_menu li {
+    float: left;
+    margin-left: 16px;
+    padding-left: 16px;
+    border-left: 1px solid #ff8800; }
+
+.regular {
+  margin-top: 16px;
+  margin-left: 32px; }
+  .regular li {
+    list-style: square; }
 
 /* @mixin border { */
 /* 	border: 1px solid $orange; */

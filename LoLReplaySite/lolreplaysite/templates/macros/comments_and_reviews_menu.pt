@@ -1,0 +1,12 @@
+<ul metal:define-macro="comments_and_reviews_menu" 
+	id="comments_reviews_menu">
+	<li id="comments-menu-item">
+		<a metal:define-slot="menu_item1"
+		   id="comments-button"
+		   href="#">Comments(0)</a>
+	</li>
+	<li id="reviews-menu-item">
+		<a metal:define-slot="menu_item2"
+		   href="#">Reviews(0)</a>
+	</li>
+</ul>

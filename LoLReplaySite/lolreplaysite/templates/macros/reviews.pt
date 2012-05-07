@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">			
+<div metal:define-macro="reviews"
+	 id="reviews-container">
+	<div tal:condition="view.logged_in_user == owner" 
+		 id="ask_for_a_review">
+		<span>Ask for a review from:</span>
+		<form name="ask" action="${ask_user_for_review_href}" method="post"> 
+			<select name="username">
+				<option tal:repeat="username users_eligible_to_review">${username}</option>
+			</select>
+			<input name="form" type="submit" value="Ask" onClick=doIt(1) /> <em tal:condition="request.session.peek_flash('asked_successfully')" class="green">${request.session.pop_flash('asked_successfully')[0]}</em><em tal:condition="request.session.peek_flash('asked_error')" class="error">${request.session.pop_flash('asked_error')[0]}</em>
+		</form>
+	</div>
+	<div tal:condition="reviewers and view.logged_in_user == owner">
+		<span>Currently displaying review by:</span>
+		<form id="reviewer" action="${display_review_href}" method="post">
+			<select name="reviewer">
+				<tal:block repeat="username reviewers">
+					<option tal:condition="username != current_reviewer">${username}</option>
+					<option tal:condition="username == current_reviewer" selected="selected">${username}</option>
+				</tal:block>
+				
+				
+			</select>
+
+			<input name="form" type="submit" value="Display" />
+		</form>
+	</div>
+	<div>
+		<span class="reviewer_instructions">
+			<b>From the reviewee<em tal:condition="view.logged_in_user == owner" class="error">*</em>:</b>
+			<em tal:condition="request.session.peek_flash('success_queue')" class="green">${request.session.pop_flash('success_queue')[0]}</em>
+			<em tal:condition="request.session.peek_flash('error_queue')" class="error">${request.session.pop_flash('error_queue')[0]}</em>
+		</span><span class="reviewer_responses"><b>From the reviewer<em tal:condition="view.logged_in_user in reviewers or view.logged_in_user in users_asked_to_review" class="error">*</em>:</b></span>
+		<em tal:condition="request.session.peek_flash('review_success')" class="green">${request.session.pop_flash('review_success')[0]}</em>
+		<em tal:condition="request.session.peek_flash('review_error')" class="error">${request.session.pop_flash('review_error')[0]}</em>
+			<div class="pair">
+				<form name="save_reviewee_comment" action="${save_reviewee_comment_href}" method="post">
+					<textarea tal:condition="view.logged_in_user == owner"
+							  class="owner_comment"
+							  name="reviewee_comment">${'' if not reviewee_comment else reviewee_comment}</textarea>
+					<div tal:condition="view.logged_in_user != owner"
+					 	 class="owner_comment">
+					 	 ${'' if not reviewee_comment else reviewee_comment}
+					</div>
+					<input type='hidden' name="form" />
+				</form>
+				
+				
+				<div tal:condition="view.logged_in_user not in reviewers and view.logged_in_user not in users_asked_to_review" class="reviewer_comment">
+					<span tal:condition="len(reviewers) == 0">${no_reviews_text}</span>
+					<span tal:condition="reviewers">${review_text}</span>
+				</div>
+				<form tal:condition="view.logged_in_user in reviewers or view.logged_in_user in users_asked_to_review" name="save_reviewer_comment" action="${save_reviewer_comment_href}" method="post"> 
+					<textarea tal:condition="view.logged_in_user in reviewers"
+							  class="reviewer_comment"
+							  name="review_text">${review_text}</textarea>
+					<textarea tal:condition="view.logged_in_user in users_asked_to_review"
+							  class="reviewer_comment"
+							  name="review_text">Type a review in here.</textarea>
+					<input type='hidden' name="form" />
+				</form>
+			</div>
+			<input tal:condition="view.logged_in_user == owner" id="save_reviewee_comment" name="form" type="submit" value="Save" onClick=doit1() />
+			<input tal:condition="view.logged_in_user in reviewers or view.logged_in_user in users_asked_to_review" id="save_reviewer_comment" name="form" type="submit" value="Save" onClick=doit2() />
+			
+		
+<!-- 		<span class="reviewee"></span> -->
+	</div>
+	<script>
+$('form[name="ask"]').submit(function() {
+	value = $('.owner_comment').val()
+	$('.owner_comment').clone().hide().val(value).appendTo('form[name="ask"]');
+});
+function doit1() {
+	$('form[name="save_reviewee_comment"]').submit()
+}
+function doit2() {
+	$('form[name="save_reviewer_comment"]').submit()
+}
+</script>
+</div>
+

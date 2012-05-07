@@ -15,6 +15,12 @@ $green: #17FF55;
 	margin: 0;
 	padding: 0;
 }
+.error {
+	color: red;
+}
+.blue {
+	color: $light-blue;
+}
 li {
 	list-style: none;
 }
@@ -76,7 +82,7 @@ body {
 	li {
 		float: left;
 		margin: 0 0 0 $u;
-		a {
+		a, span {
 			display: inline-block;
 			color: $gray;
 			width: 6 * $u;
@@ -84,10 +90,14 @@ body {
 			border: 1px solid $gray;
 			text-align: center;
 			line-height: 3.5 * $u;
-			&:hover {
-				color: $orange;
-				border-color: $orange;
-			}
+		}
+		a:hover {
+			color: $orange;
+			border-color: $orange;
+		}
+		span {
+			color: $orange;
+			border: 1px solid $orange;
 		}
 	}
 }
@@ -241,18 +251,19 @@ input[type="text"], input[type="password"], textarea {
 	li {
 		float: left;
 	}
-	#comments-menu-item {
-		margin-right: $u;
-		border-right: 1px solid $orange;
-		padding-right: $u;
+	#reviews-menu-item {
+		margin-left: $u;
+		border-left: 1px solid $orange;
+		padding-left: $u;
 	}
 	
 }
 
 #comments-container {
 	clear: left;
+	padding-top: 16px;
 	#comments-list {
-		margin-top: 16px;
+		
 		list-style: none;
 		.comment {
 			margin-top: 16px;
@@ -331,12 +342,10 @@ input[type="text"], input[type="password"], textarea {
 	#ask_for_a_review {
 		//margin-left: 5 * $u;
 	}
-	div {
+	&>div {
 		margin-bottom: $u;
 	}
-	.error {
-		color: red;
-	}
+	
 	.reviewer_instructions {
 		display: inline-block;
 		width: 23 * $u;
@@ -357,16 +366,47 @@ input[type="text"], input[type="password"], textarea {
 	height: 300px;
 	resize: vertical;
 	border: 1px solid $orange;
+	textarea {
+		background-color: $black-blue;
+	}
 }
-.reviewer_comment {
-	
-}
+
 .ask_for_review_notifications {
 	li {
 		margin-left: 2 * $u;
 		list-style: disc;
 	}
-	 
+}
+form[name="save_reviewee_comment"], form[name="save_reviewer_comment"] {
+	display: inline-block;
+}
+#save_reviewer_comment {
+	margin-left: 372px;
+}
+.review_stuff_menu {
+	display: inline-block;
+	vertical-align: bottom;
+	li:first-child {
+		margin-left: 0;
+		padding-left: 0;
+		border-left: none;
+	}
+	li {
+		float:left;
+		margin-left: $u;
+		padding-left: $u;
+		border-left: 1px solid $orange;
+	}
+}
+.regular {
+	margin-top: $u;
+	
+	margin-left: 2 * $u;
+	li {
+		list-style: square;
+	}
+}
+.review_stuff_div {
 	
 }
 /* @mixin border { */

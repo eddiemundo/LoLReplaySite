@@ -1,0 +1,11 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		<metal:block use-macro="view.your_review_stuff_macro" />
+		<ul class='regular'>
+			<li tal:repeat="review_request review_requests">
+				You have asked <em class="blue">${review_request.askee}</em> to review <a href="${review_request.href}">"${review_request.title}"</a>
+			</li>
+		</ul>
+	</metal:block>
+</metal:block>

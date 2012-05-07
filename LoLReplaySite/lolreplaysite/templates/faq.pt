@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block use-macro="view.base_macro">
+	<metal:block fill-slot="content">
+		NOT A REAL FAQ.
+		<p>This is a proof of concept for a League of Legends replay sharing/review site.</p>
+		<p>How to use: You can view replays and leave comments without registering an account.
+		If you want to upload replays you gotta register an account.</p>
+		<p>If you want to review and ask other users to review replays you gotta have an account.</p>
+		
+		<ul class='regular'>
+			<li>Selected known bugs
+				<ul class='regular'>
+					<li>Replays displayed in descending chronological order</li>
+					<li>Items in "Your Review Stuff" might not be in chronological order</li>
+					<li>User account permissions aren't perfect</li>
+					<li>No notifications (you can see whats happening by clicking "Your Review Stuff" though)</li>
+					<li>A lot of small UX touches missing, and font looks like shit depending on what monospace fonts you have</li>
+				</ul>
+			</li>
+		</ul>
+		Technical Notes:
+		<p>This site was written in python using the Pyramid web framework. The DB backend is a custom "graph database" I wrote from scratch in python inspired by Neo4j
+		</p>
+		Post mortem notes:
+		<ul class='regular'>
+			<li>Needed way more upfront design. I rewrote the UI 3 times. Rewrote the site code twice. Rewrote the graphdatabase twice</li>
+			<li>Don't write your own database. It still needs work, and I want to redesign its API</li>
+			<li>Near the end it was difficult to keep everything in mind so had to draw UML-like diagrams. Better to do this early. See first point</li>
+			<li>The drawings initially made can't keep up with iteration, but help organise things in mind</li>
+			<li>It might be worth redrawing diagrams after enough changes have been made</li>
+			<li>UNIT TESTS FOR VIEW CODE. Definitely need this or refactoring/rewriting will be very slow</li>
+			<li>Pyramid web framework is only for the hardcore. Now that I know how to use it, I like it a lot, but django is "simpler"</li>
+			<li>Web programming still sucks. Flipping between templates/sass and view code is tedious. Could have been less tedious, but didn't bother trying to figure out IDE integration with sass/templates. This would have been absolutely impossible for me using PHP even with some light framework like Codeigniter</li>
+			<li>In the end I don't have that many features. Most of the time was spent learning about pyramid/templates and my graphdatabase, and rewriting bad code</li>
+			<li>maybe learn wordpress or some big CMS next</li>
+		</ul>
+		TODO:
+		<p>A LOT</p>
+		
+		
+	</metal:block>
+</metal:block>

@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<metal:block define-macro="your_review_stuff">
+<div class="review_stuff_div">Reviews asked: 
+<ul class="review_stuff_menu ">
+	<li tal:repeat="menu_item view.stuff_menu_items1">
+		<a tal:condition="not menu_item['active']"
+		   href="${menu_item['href']}">${menu_item['label']}</a>
+		<span tal:condition="menu_item['active']"><b>${menu_item['label']}</b></span>
+	</li>
+</ul>
+</div>
+<div class="review_stuff_div">Reviews authored:
+<ul id="reviews_by" class="review_stuff_menu">
+	<li tal:repeat="menu_item view.stuff_menu_items2">
+		<a tal:condition="not menu_item['active']"
+		   href="${menu_item['href']}">${menu_item['label']}</a>
+		<span tal:condition="menu_item['active']"><b>${menu_item['label']}</b></span>
+	</li>
+</ul>
+</div>
+</metal:block>

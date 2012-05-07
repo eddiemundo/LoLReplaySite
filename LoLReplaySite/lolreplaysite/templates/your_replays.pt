@@ -1,10 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <metal:block use-macro="view.base_macro">
 	<metal:block fill-slot="content">
-		<ul id="stuff_menu">
-			<li><a href="#">All Your Replays</a></li>
-			<li><a href="#">Reviewed Replays Only</a></li>
-		</ul>
+		<metal:block use-macro="view.your_replay_stuff_macro" />
 		<metal:block use-macro="view.replays_macro">
 			<metal:block fill-slot="replay_options">
 				<a class="match_details"

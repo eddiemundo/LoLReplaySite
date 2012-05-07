@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<ul metal:define-macro="replays" 
+	id="replays">
+	<li tal:repeat="replay replays">
+		<div>
+			<span class="replay_title">"${replay['title']}"</span>
+			<span class="upload_info">
+				<span>Played on ${replay['date_recorded']} by</span>
+				<img title="${replay['pov_summoner_name']} as ${replay['pov_champion_name']}" src="${replay['pov_champion_href']}" />
+				<span>${replay['pov_summoner_name']}</span>
+			</span>
+		</div>
+		<div class="middle">
+			<tal:block tal:repeat="team replay['teams']">
+				<img
+				tal:repeat="player team"
+				title="${player['summoner_name']} as ${player['champion_name']}"
+				src="${player['champion_href']}" />
+				<span tal:condition="repeat.team.even" 
+					  class="vs">vs</span>
+			</tal:block>
+			<span class="length">Length: ${replay['length']}</span>
+		</div>
+		<div>
+			<a tal:condition="view.logged_in_user == replay['owner']"
+			   class="match_details"
+ 			   href="${replay['href']}">Match Details/Comments(0)/Reviews(0)</a>
+ 			<a tal:condition="view.logged_in_user in replay['users_asked_to_review']"
+			   class="match_details"
+ 			   href="${replay['href']}">Match Details/Comments(0)/Review This Replay!</a>
+ 			<a tal:condition="view.logged_in_user in replay['reviewers']"
+ 			   class="match_details"
+ 			   href="${replay['href']}">Match Details/Comments(0)/Your Review</a>
+			<a tal:condition="not view.logged_in_user or (view.logged_in_user != replay['owner'] and view.logged_in_user not in replay['users_asked_to_review'] and view.logged_in_user not in replay['reviewers'])"
+ 			   class="match_details"
+ 			   href="${replay['href']}">Match Details/Comments(0)</a>
+			<a class="download"
+			   href="${replay['download_href']}">Download</a>
+		</div>
+	</li>
+</ul>

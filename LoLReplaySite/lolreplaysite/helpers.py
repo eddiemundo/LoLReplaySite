@@ -2,7 +2,14 @@ from lolreplaysite.constants import *
 from pyramid.security import authenticated_userid
 import struct, json, os, hashlib, uuid, re, logging
 from graphdatabase import GraphDatabase
+from collections import Counter
 log = logging.getLogger(__name__)
+
+def diff(l1, l2):
+	c1 = Counter(l1)
+	c2 = Counter(l2)
+	d = c1 - c2
+	return tuple(d.elements())
 
 def suffix(d):
     return 'th' if 11<=d<=13 else {1:'st',2:'nd',3:'rd'}.get(d%10, 'th')
